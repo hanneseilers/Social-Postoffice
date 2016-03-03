@@ -37,21 +37,25 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     {
         MainWindow.setObjectName("MainWindow");
         MainWindow.resize(new QSize(800, 599).expandedTo(MainWindow.minimumSizeHint()));
+        QSizePolicy sizePolicy = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy.setHorizontalStretch((byte)0);
+        sizePolicy.setVerticalStretch((byte)0);
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth());
+        MainWindow.setSizePolicy(sizePolicy);
         actionClose = new QAction(MainWindow);
         actionClose.setObjectName("actionClose");
         centralwidget = new QWidget(MainWindow);
         centralwidget.setObjectName("centralwidget");
-        QSizePolicy sizePolicy = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
-        sizePolicy.setHorizontalStretch((byte)0);
-        sizePolicy.setVerticalStretch((byte)0);
-        sizePolicy.setHeightForWidth(centralwidget.sizePolicy().hasHeightForWidth());
-        centralwidget.setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy1.setHorizontalStretch((byte)0);
+        sizePolicy1.setVerticalStretch((byte)0);
+        sizePolicy1.setHeightForWidth(centralwidget.sizePolicy().hasHeightForWidth());
+        centralwidget.setSizePolicy(sizePolicy1);
         gridLayoutWidget = new QWidget(centralwidget);
         gridLayoutWidget.setObjectName("gridLayoutWidget");
         gridLayoutWidget.setGeometry(new QRect(10, 10, 781, 531));
         gridLayout = new QGridLayout(gridLayoutWidget);
         gridLayout.setObjectName("gridLayout");
-        gridLayout.setSizeConstraint(QLayout::SetMaximumSize);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout.setObjectName("horizontalLayout");
         lblUsrSearch = new QLabel(gridLayoutWidget);
@@ -72,11 +76,11 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
 
         lstUsr = new QListView(gridLayoutWidget);
         lstUsr.setObjectName("lstUsr");
-        QSizePolicy sizePolicy1 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
-        sizePolicy1.setHorizontalStretch((byte)0);
-        sizePolicy1.setVerticalStretch((byte)0);
-        sizePolicy1.setHeightForWidth(lstUsr.sizePolicy().hasHeightForWidth());
-        lstUsr.setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy2.setHorizontalStretch((byte)0);
+        sizePolicy2.setVerticalStretch((byte)0);
+        sizePolicy2.setHeightForWidth(lstUsr.sizePolicy().hasHeightForWidth());
+        lstUsr.setSizePolicy(sizePolicy2);
         QFont font1 = new QFont();
         font1.setFamily("Droid Sans Mono");
         font1.setPointSize(14);
@@ -88,31 +92,31 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         verticalLayout.setObjectName("verticalLayout");
         btnUsrEdit = new QPushButton(gridLayoutWidget);
         btnUsrEdit.setObjectName("btnUsrEdit");
-        QSizePolicy sizePolicy2 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
-        sizePolicy2.setHorizontalStretch((byte)0);
-        sizePolicy2.setVerticalStretch((byte)0);
-        sizePolicy2.setHeightForWidth(btnUsrEdit.sizePolicy().hasHeightForWidth());
-        btnUsrEdit.setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy3 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy3.setHorizontalStretch((byte)0);
+        sizePolicy3.setVerticalStretch((byte)0);
+        sizePolicy3.setHeightForWidth(btnUsrEdit.sizePolicy().hasHeightForWidth());
+        btnUsrEdit.setSizePolicy(sizePolicy3);
 
         verticalLayout.addWidget(btnUsrEdit);
 
         btnUsrDelete = new QPushButton(gridLayoutWidget);
         btnUsrDelete.setObjectName("btnUsrDelete");
-        QSizePolicy sizePolicy3 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
-        sizePolicy3.setHorizontalStretch((byte)0);
-        sizePolicy3.setVerticalStretch((byte)0);
-        sizePolicy3.setHeightForWidth(btnUsrDelete.sizePolicy().hasHeightForWidth());
-        btnUsrDelete.setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy4 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy4.setHorizontalStretch((byte)0);
+        sizePolicy4.setVerticalStretch((byte)0);
+        sizePolicy4.setHeightForWidth(btnUsrDelete.sizePolicy().hasHeightForWidth());
+        btnUsrDelete.setSizePolicy(sizePolicy4);
 
         verticalLayout.addWidget(btnUsrDelete);
 
         btnUsrAdd = new QPushButton(gridLayoutWidget);
         btnUsrAdd.setObjectName("btnUsrAdd");
-        QSizePolicy sizePolicy4 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
-        sizePolicy4.setHorizontalStretch((byte)0);
-        sizePolicy4.setVerticalStretch((byte)0);
-        sizePolicy4.setHeightForWidth(btnUsrAdd.sizePolicy().hasHeightForWidth());
-        btnUsrAdd.setSizePolicy(sizePolicy4);
+        QSizePolicy sizePolicy5 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy5.setHorizontalStretch((byte)0);
+        sizePolicy5.setVerticalStretch((byte)0);
+        sizePolicy5.setHeightForWidth(btnUsrAdd.sizePolicy().hasHeightForWidth());
+        btnUsrAdd.setSizePolicy(sizePolicy5);
 
         verticalLayout.addWidget(btnUsrAdd);
 
@@ -123,11 +127,11 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         horizontalLayout_2.setObjectName("horizontalLayout_2");
         btnIncome = new QPushButton(gridLayoutWidget);
         btnIncome.setObjectName("btnIncome");
-        QSizePolicy sizePolicy5 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
-        sizePolicy5.setHorizontalStretch((byte)0);
-        sizePolicy5.setVerticalStretch((byte)0);
-        sizePolicy5.setHeightForWidth(btnIncome.sizePolicy().hasHeightForWidth());
-        btnIncome.setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
+        sizePolicy6.setHorizontalStretch((byte)0);
+        sizePolicy6.setVerticalStretch((byte)0);
+        sizePolicy6.setHeightForWidth(btnIncome.sizePolicy().hasHeightForWidth());
+        btnIncome.setSizePolicy(sizePolicy6);
         btnIncome.setMinimumSize(new QSize(0, 150));
         QFont font2 = new QFont();
         font2.setPointSize(18);
@@ -140,11 +144,11 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
 
         btnOutgo = new QPushButton(gridLayoutWidget);
         btnOutgo.setObjectName("btnOutgo");
-        QSizePolicy sizePolicy6 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
-        sizePolicy6.setHorizontalStretch((byte)0);
-        sizePolicy6.setVerticalStretch((byte)0);
-        sizePolicy6.setHeightForWidth(btnOutgo.sizePolicy().hasHeightForWidth());
-        btnOutgo.setSizePolicy(sizePolicy6);
+        QSizePolicy sizePolicy7 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
+        sizePolicy7.setHorizontalStretch((byte)0);
+        sizePolicy7.setVerticalStretch((byte)0);
+        sizePolicy7.setHeightForWidth(btnOutgo.sizePolicy().hasHeightForWidth());
+        btnOutgo.setSizePolicy(sizePolicy7);
         btnOutgo.setMinimumSize(new QSize(0, 150));
         QFont font3 = new QFont();
         font3.setPointSize(18);
@@ -159,11 +163,11 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
 
         lblUsrListInfo = new QLabel(gridLayoutWidget);
         lblUsrListInfo.setObjectName("lblUsrListInfo");
-        QSizePolicy sizePolicy7 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Fixed);
-        sizePolicy7.setHorizontalStretch((byte)0);
-        sizePolicy7.setVerticalStretch((byte)0);
-        sizePolicy7.setHeightForWidth(lblUsrListInfo.sizePolicy().hasHeightForWidth());
-        lblUsrListInfo.setSizePolicy(sizePolicy7);
+        QSizePolicy sizePolicy8 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Fixed);
+        sizePolicy8.setHorizontalStretch((byte)0);
+        sizePolicy8.setVerticalStretch((byte)0);
+        sizePolicy8.setHeightForWidth(lblUsrListInfo.sizePolicy().hasHeightForWidth());
+        lblUsrListInfo.setSizePolicy(sizePolicy8);
         QFont font4 = new QFont();
         font4.setBold(true);
         font4.setWeight(75);
