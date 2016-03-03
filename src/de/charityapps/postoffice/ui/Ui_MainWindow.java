@@ -30,6 +30,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QMenuBar menubar;
     public QMenu menuDatei;
     public QStatusBar statusbar;
+    public QToolBar toolBar;
 
     public Ui_MainWindow() { super(); }
 
@@ -46,6 +47,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         actionClose.setObjectName("actionClose");
         centralwidget = new QWidget(MainWindow);
         centralwidget.setObjectName("centralwidget");
+        centralwidget.setEnabled(true);
         QSizePolicy sizePolicy1 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
         sizePolicy1.setHorizontalStretch((byte)0);
         sizePolicy1.setVerticalStretch((byte)0);
@@ -185,6 +187,9 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         statusbar = new QStatusBar(MainWindow);
         statusbar.setObjectName("statusbar");
         MainWindow.setStatusBar(statusbar);
+        toolBar = new QToolBar(MainWindow);
+        toolBar.setObjectName("toolBar");
+        MainWindow.addToolBar(com.trolltech.qt.core.Qt.ToolBarArea.TopToolBarArea, toolBar);
 
         menubar.addAction(menuDatei.menuAction());
         menuDatei.addAction(actionClose);
@@ -206,6 +211,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         btnOutgo.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Ausgang", null));
         lblUsrListInfo.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Ausgew\u00e4hlte Kunden:", null));
         menuDatei.setTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Datei", null));
+        toolBar.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "toolBar", null));
     } // retranslateUi
 
 }
