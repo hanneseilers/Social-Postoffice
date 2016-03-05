@@ -12,6 +12,9 @@ import com.trolltech.qt.gui.*;
 public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
 {
     public QAction actionClose;
+    public QAction actionImport;
+    public QAction actionExport;
+    public QAction actionSettings;
     public QWidget centralwidget;
     public QWidget gridLayoutWidget;
     public QGridLayout gridLayout;
@@ -30,7 +33,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QMenuBar menubar;
     public QMenu menuDatei;
     public QStatusBar statusbar;
-    public QToolBar toolBar;
 
     public Ui_MainWindow() { super(); }
 
@@ -45,6 +47,14 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         MainWindow.setSizePolicy(sizePolicy);
         actionClose = new QAction(MainWindow);
         actionClose.setObjectName("actionClose");
+        actionImport = new QAction(MainWindow);
+        actionImport.setObjectName("actionImport");
+        actionExport = new QAction(MainWindow);
+        actionExport.setObjectName("actionExport");
+        actionExport.setEnabled(false);
+        actionSettings = new QAction(MainWindow);
+        actionSettings.setObjectName("actionSettings");
+        actionSettings.setEnabled(false);
         centralwidget = new QWidget(MainWindow);
         centralwidget.setObjectName("centralwidget");
         centralwidget.setEnabled(true);
@@ -187,11 +197,12 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         statusbar = new QStatusBar(MainWindow);
         statusbar.setObjectName("statusbar");
         MainWindow.setStatusBar(statusbar);
-        toolBar = new QToolBar(MainWindow);
-        toolBar.setObjectName("toolBar");
-        MainWindow.addToolBar(com.trolltech.qt.core.Qt.ToolBarArea.TopToolBarArea, toolBar);
 
         menubar.addAction(menuDatei.menuAction());
+        menuDatei.addAction(actionImport);
+        menuDatei.addAction(actionExport);
+        menuDatei.addAction(actionSettings);
+        menuDatei.addSeparator();
         menuDatei.addAction(actionClose);
         retranslateUi(MainWindow);
         actionClose.triggered.connect(MainWindow, "close()");
@@ -203,6 +214,9 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     {
         MainWindow.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Social Postoffice", null));
         actionClose.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Beenden", null));
+        actionImport.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kundendaten importieren", null));
+        actionExport.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kundendaten exportieren", null));
+        actionSettings.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Einstellungen", null));
         lblUsrSearch.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suche:", null));
         btnUsrEdit.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kunde bearbeiten", null));
         btnUsrDelete.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kunde l\u00f6schen", null));
@@ -211,7 +225,6 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         btnOutgo.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Ausgang", null));
         lblUsrListInfo.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Ausgew\u00e4hlte Kunden:", null));
         menuDatei.setTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Datei", null));
-        toolBar.setWindowTitle(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "toolBar", null));
     } // retranslateUi
 
 }
