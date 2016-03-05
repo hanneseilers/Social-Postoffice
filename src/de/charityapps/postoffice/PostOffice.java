@@ -2,9 +2,8 @@ package de.charityapps.postoffice;
 
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
-
 import de.charityapps.postoffice.ui.Ui_MainWindow;
-import de.hanneseilers.jgithubloader.GithubLoader;
+import de.charityapps.postoffice.ui.Ui_UsrDialog;
 
 /**
  * Main class
@@ -16,6 +15,8 @@ public class PostOffice {
 	public static final String TAG_VERSION = "";
 	public static final String APP_NAME = "Social-Postoffice";
 	
+	private static PostOffice INSTANCE = null;
+	
 	private QApplication mQApplication;
 	private QMainWindow mQMainWindow;
 	private Ui_MainWindow mUi;
@@ -24,7 +25,6 @@ public class PostOffice {
 	 * Constructor
 	 */
 	public PostOffice() {
-		System.out.println("new post office");
 		
 		// create gui
 		mQApplication = new QApplication( new String[]{} );
@@ -36,10 +36,67 @@ public class PostOffice {
 		// create database
 		
 		// connect signals
-		
+		mUi.actionExport.triggered.connect( this, "exportUserData()" );
+		mUi.actionImport.triggered.connect( this, "importUserData()" );
+		mUi.actionSettings.triggered.connect( this, "editSettings()" );
+		mUi.btnIncome.clicked.connect( this, "addIncome()" );
+		mUi.btnOutgo.clicked.connect( this, "addOutgo()" );
+		mUi.btnUsrAdd.clicked.connect( this, "addUser()" );
+		mUi.btnUsrDelete.clicked.connect( this, "deleteUser()" );
+		mUi.btnUsrEdit.clicked.connect( this, "editUser()" );
 		
 		// start application
 		mQApplication.exec();		
+	}
+	
+	public void editUser(){
+		
+	}
+	
+	public void deleteUser(){
+		
+	}
+	
+	public void addUser(){
+		
+	}
+	
+	public void searchUser(){
+		
+	}
+	
+	public void addIncome(){
+		
+	}
+	
+	public void addOutgo(){
+		
+	}
+	
+	public void importUserData(){
+		
+	}
+	
+	public void exportUserData(){
+		
+	}
+	
+	public void editSettings(){
+		
+	}
+	
+	private void showUserEditDialog(){
+		QMainWindow vWindow = new QMainWindow();
+		Ui_UsrDialog vDialog = new Ui_UsrDialog();
+		vDialog.setupUi(vWindow);
+		vWindow.show();
+	}
+	
+	public static PostOffice getInstance(){
+		if( INSTANCE == null )
+			INSTANCE = new PostOffice();
+		
+		return INSTANCE;
 	}
 
 	public static void main(String[] args) {
@@ -49,7 +106,7 @@ public class PostOffice {
 //		vLoader.update( TAG_VERSION );
 		
 		// start post office
-		new PostOffice();
+		PostOffice.getInstance();
 	}
 
 }
