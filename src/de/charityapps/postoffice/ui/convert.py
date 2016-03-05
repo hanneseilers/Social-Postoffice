@@ -1,8 +1,14 @@
 from os import listdir, system
 from os.path import isfile, abspath 
+import sys
 
 print ">> converting ui files"
-for vFile in listdir("."):
+
+vFiles = listdir(".")
+if len(sys.argv) > 1:
+	vFiles = sys.argv[1:]
+
+for vFile in vFiles:
 	if isfile(vFile) and ".ui" in vFile:
 		
 		vNewFile = vFile.replace(".ui", ".jui")
@@ -41,6 +47,7 @@ if "src/" in package:
 				fo = open( vFile, 'w' )
 				fo.write( data )
 				fo.close()
+
 
 
 print ">> finished" 
