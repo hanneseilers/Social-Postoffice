@@ -1,7 +1,8 @@
-package de.charityapps.postoffice.ui;
+package de.charityapps.postoffice;
 
 import com.trolltech.qt.gui.QMainWindow;
-import de.charityapps.postoffice.Database;
+
+import de.charityapps.postoffice.ui.Ui_UsrDialog;
 
 public class UserDialog {
 	

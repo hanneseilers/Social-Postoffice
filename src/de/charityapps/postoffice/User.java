@@ -1,13 +1,5 @@
 package de.charityapps.postoffice;
 
-import java.util.List;
-
-import com.trolltech.qt.core.QAbstractListModel;
-import com.trolltech.qt.core.QModelIndex;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.gui.QStandardItem;
-import com.trolltech.qt.gui.QStandardItemModel;
-
 public class User {
 
 	private int id;

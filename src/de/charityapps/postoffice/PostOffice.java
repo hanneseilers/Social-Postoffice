@@ -13,7 +13,6 @@ import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QStringListModel;
 
 import de.charityapps.postoffice.ui.Ui_MainWindow;
-import de.charityapps.postoffice.ui.UserDialog;
 
 /**
  * Main class
@@ -89,9 +88,9 @@ public class PostOffice {
 		for( User vUser : mUsers ){
 			vUsersList.add( vUser.toString() );
 		}		
-		QStringListModel vModel = new QStringListModel( vUsersList );		
-		vModel.setStringList(vUsersList);
 		
+		QStringListModel vModel = new QStringListModel( vUsersList );		
+		vModel.setStringList(vUsersList);		
 		mUi.lstUsr.setModel( vModel );		
 	}
 	

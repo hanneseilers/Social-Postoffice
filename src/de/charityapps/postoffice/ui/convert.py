@@ -10,6 +10,7 @@ if len(sys.argv) > 1:
 
 for vFile in vFiles:
 	if isfile(vFile) and ".ui" in vFile:
+		print "processing", vFile
 		
 		vNewFile = vFile.replace(".ui", ".jui")
 		fi = open( vFile, 'r' )

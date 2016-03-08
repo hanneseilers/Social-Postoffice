@@ -97,6 +97,9 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         font1.setFamily("Droid Sans Mono");
         font1.setPointSize(14);
         lstUsr.setFont(font1);
+        lstUsr.setEditTriggers(.createQFlags(QAbstractItemView::NoEditTriggers));
+        lstUsr.setSelectionMode(QAbstractItemView::SingleSelection);
+        lstUsr.setSelectionBehavior(QAbstractItemView::SelectRows);
 
         gridLayout.addWidget(lstUsr, 1, 0, 1, 1);
 
