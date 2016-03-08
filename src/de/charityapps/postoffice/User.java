@@ -80,8 +80,10 @@ public class User {
 	}
 	
 	public String toString(){
-		return "[" + String.format( "%04d", id ) + "] "
-				+ name
+		String vName = new String(name); 
+		if( vName.length() > 20 )
+			vName = vName.substring( 0, 18 ) + ".";
+		return String.format( "%1$-20s", vName)
 				+ "\tHaus: " + String.format( "%1$4s", house )
 				+ "\tEtage: " + String.format( "%1$6s", floor )
 				+ "\tRaum: " + String.format( "%1$4s", floor )

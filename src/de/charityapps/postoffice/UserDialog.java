@@ -35,12 +35,12 @@ public class UserDialog {
 			if( mAddUser ){
 				
 				// add new user
-				String vSql = "INSERT INTO users (name, house, floor, room) VALUES ("
+				String vSql = "INSERT INTO users (name, house, floor, room, manualAdded) VALUES ("
 						+ "'" + vName + "',"
 						+ "'" + vHouse + "',"
 						+ "'" + vFloor + "',"
-						+ "'" + vRoom + "'"
-						+ ");";
+						+ "'" + vRoom + "',"
+						+ "1);";
 				Database.getInstance().execUpdate(vSql);
 				
 			} else {
@@ -55,6 +55,8 @@ public class UserDialog {
 				Database.getInstance().execUpdate(vSql);
 				
 			}
+			
+			PostOffice.getInstance().updateSearch();
 		}
 		
 	}

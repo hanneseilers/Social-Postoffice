@@ -75,7 +75,13 @@ public class PostOffice {
 	}
 	
 	public void deleteUser(){
-		
+		User vUser = getSelectedUser();
+		if( vUser != null ){
+			String vSql = "UPDATE users SET deleted=1"
+					+ " WHERE rowid=" + vUser.getId();
+			Database.getInstance().execUpdate( vSql );
+		}
+		searchUser(mLastUserSearch);
 	}
 	
 	public void addUser(){
@@ -94,7 +100,11 @@ public class PostOffice {
 		
 		QStringListModel vModel = new QStringListModel( vUsersList );		
 		vModel.setStringList(vUsersList);		
-		mUi.lstUsr.setModel( vModel );		
+		mUi.lstUsr.setModel( vModel );	
+	}
+	
+	public void updateSearch(){
+		searchUser( mLastUserSearch );
 	}
 	
 	public void addIncome(){
@@ -108,7 +118,13 @@ public class PostOffice {
 	}
 	
 	public void addOutgo(){
-		
+		User vUser = getSelectedUser();
+		if( vUser != null && vUser.getIncome() > vUser.getOutgo() ){
+			String vSql = "UPDATE users SET outgo=" + (vUser.getOutgo()+1)
+					+ " WHERE rowid=" + vUser.getId();
+			Database.getInstance().execUpdate( vSql );
+		}
+		searchUser(mLastUserSearch);
 	}
 	
 	public void importUserData(){
@@ -138,11 +154,11 @@ public class PostOffice {
 		
 		try {
 			
-			String vSql = "SELECT * FROM users;";
+			String vSql = "SELECT * FROM users WHERE deleted=0 ORDER BY name ASC;";
 			ResultSet vResult = Database.getInstance().execQuery( vSql );
 			
 			while( vResult.next() ){
-				User vUser = new User( vResult.getRow() );
+				User vUser = new User( vResult.getInt("id") );
 				vUser.setName( vResult.getString("name") );
 				vUser.setHouse( vResult.getString("house") );
 				vUser.setFloor( vResult.getString("floor") );
@@ -151,7 +167,8 @@ public class PostOffice {
 				vUser.setOutgo( vResult.getInt("outgo") );
 				vUser.setManualAdded( vResult.getBoolean("manualAdded") );
 				
-				if( (aName != null && vUser.getName().contains(aName)) || aName == null ){
+				if( (aName != null && vUser.getName().toLowerCase().contains(aName.toLowerCase()))
+						|| aName == null ){
 					vUsers.add( vUser );
 				}
 			}

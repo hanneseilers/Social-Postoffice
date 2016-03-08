@@ -44,13 +44,15 @@ public class Database {
 	private void initDatabase(){
 		logger.debug( "initiating database tables" );
 		String vSql = "CREATE TABLE IF NOT EXISTS users "
-				+"(name VARCHAR(45) NOT NULL DEFAULT '',"
+				+"(id INTEGER PRIMARY KEY ASC,"
+				+ "name VARCHAR(45) NOT NULL DEFAULT '',"
 				+ "house VARCHAR(45) NULL,"
 				+ "floor VARCHAR(45) NULL,"
 				+ "room VARCHAR(45) NULL,"
 				+ "income INT(11) NOT NULL DEFAULT 0,"
 				+ "outgo INT(11) NOT NULL DEFAULT 0,"
-				+ "manualAdded TINYINT(1) NOT NULL DEFAULT 0);";
+				+ "manualAdded TINYINT(1) NOT NULL DEFAULT 0,"
+				+ "deleted TINYINT(1) NOT NULL DEFAULT 0);";
 		execUpdate( vSql );
 	}
 	
