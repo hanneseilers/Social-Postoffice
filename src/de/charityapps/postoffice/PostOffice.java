@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QStringListModel;
@@ -32,6 +33,7 @@ public class PostOffice {
 	private Ui_MainWindow mUi;
 	
 	private List<User> mUsers = new ArrayList<User>();
+	private String mLastUserSearch = null;
 	
 	/**
 	 * Constructor
@@ -82,6 +84,7 @@ public class PostOffice {
 	
 	public void searchUser(String aName){
 		mUsers = getUsers( aName );
+		mLastUserSearch = aName;
 		
 		// convert to string list
 		List<String> vUsersList = new ArrayList<String>();
@@ -95,7 +98,13 @@ public class PostOffice {
 	}
 	
 	public void addIncome(){
-		
+		User vUser = getSelectedUser();
+		if( vUser != null ){
+			String vSql = "UPDATE users SET income=" + (vUser.getIncome()+1)
+					+ " WHERE rowid=" + vUser.getId();
+			Database.getInstance().execUpdate( vSql );
+		}
+		searchUser(mLastUserSearch);
 	}
 	
 	public void addOutgo(){
@@ -114,7 +123,17 @@ public class PostOffice {
 		
 	}
 	
-	public List<User> getUsers(String aName){
+	private User getSelectedUser(){
+		List<QModelIndex> vSelectedUsers = mUi.lstUsr.selectionModel().selectedRows();
+		
+		if( vSelectedUsers.size() > 0 && mUsers.size() >= vSelectedUsers.size() ){
+			return mUsers.get( vSelectedUsers.get(0).row() );
+		}
+		
+		return null;
+	}
+	
+	private List<User> getUsers(String aName){
 		List<User> vUsers = new ArrayList<User>();	
 		
 		try {
@@ -165,6 +184,11 @@ public class PostOffice {
 		// start post office
 		logger.debug( "starting application" );
 		PostOffice.getInstance().getApplication().exec();
+		
+		logger.debug( "creating database backup" );
+		Database.getInstance().backup();
+		Database.getInstance().closeDatabaseConnection();
+		logger.debug( "application stopped" );		
 	}
 
 }

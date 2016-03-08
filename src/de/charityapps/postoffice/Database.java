@@ -87,6 +87,20 @@ public class Database {
 		return false;
 	}
 	
+	public void closeDatabaseConnection(){
+		try{
+			if( mConnection != null )
+				mConnection.close();
+		} catch (SQLException e) {
+			logger.error( e.getMessage() );
+			e.printStackTrace();
+		}	
+	}
+	
+	public void backup(){
+		// TODO
+	}
+	
 	public static Database getInstance(){
 		if( INSTANCE == null )
 			INSTANCE = new Database();
