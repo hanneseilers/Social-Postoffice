@@ -104,6 +104,8 @@ public class Ui_UsrDialog implements com.trolltech.qt.QUiForm<QMainWindow>
 
         UsrDialog.setCentralWidget(centralwidget);
         retranslateUi(UsrDialog);
+        btnSave.clicked.connect(UsrDialog, "close()");
+        btnCancel.clicked.connect(UsrDialog, "close()");
 
         UsrDialog.connectSlotsByName();
     } // setupUi

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>599</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,8 +34,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>781</width>
-      <height>531</height>
+      <width>1011</width>
+      <height>701</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -72,6 +72,12 @@
          <family>Droid Sans Mono</family>
          <pointsize>14</pointsize>
         </font>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
        </property>
       </widget>
      </item>
@@ -204,7 +210,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1024</width>
      <height>27</height>
     </rect>
    </property>

@@ -39,7 +39,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public void setupUi(QMainWindow MainWindow)
     {
         MainWindow.setObjectName("MainWindow");
-        MainWindow.resize(new QSize(800, 599).expandedTo(MainWindow.minimumSizeHint()));
+        MainWindow.resize(new QSize(1024, 768).expandedTo(MainWindow.minimumSizeHint()));
         QSizePolicy sizePolicy = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Expanding, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
         sizePolicy.setHorizontalStretch((byte)0);
         sizePolicy.setVerticalStretch((byte)0);
@@ -65,7 +65,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         centralwidget.setSizePolicy(sizePolicy1);
         gridLayoutWidget = new QWidget(centralwidget);
         gridLayoutWidget.setObjectName("gridLayoutWidget");
-        gridLayoutWidget.setGeometry(new QRect(10, 10, 781, 531));
+        gridLayoutWidget.setGeometry(new QRect(10, 10, 1011, 701));
         gridLayout = new QGridLayout(gridLayoutWidget);
         gridLayout.setObjectName("gridLayout");
         horizontalLayout = new QHBoxLayout();
@@ -190,7 +190,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         MainWindow.setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar.setObjectName("menubar");
-        menubar.setGeometry(new QRect(0, 0, 800, 27));
+        menubar.setGeometry(new QRect(0, 0, 1024, 27));
         menuDatei = new QMenu(menubar);
         menuDatei.setObjectName("menuDatei");
         MainWindow.setMenuBar(menubar);
