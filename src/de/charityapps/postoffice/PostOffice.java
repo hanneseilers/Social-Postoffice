@@ -2,7 +2,9 @@ package de.charityapps.postoffice;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.LogManager;
@@ -14,6 +16,9 @@ import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QStringListModel;
 
 import de.charityapps.postoffice.ui.Ui_MainWindow;
+import de.charityapps.postoffice.ui.utils.UserDialog;
+import de.charityapps.postoffice.utils.Printer;
+import de.charityapps.postoffice.utils.StringUtils;
 
 /**
  * Main class
@@ -53,6 +58,7 @@ public class PostOffice {
 		
 		// connect signals
 		logger.debug( "connecting ui singlas" );
+		mUi.actionPrint.triggered.connect( this, "printList()" );
 		mUi.actionExport.triggered.connect( this, "exportUserData()" );
 		mUi.actionImport.triggered.connect( this, "importUserData()" );
 		mUi.actionSettings.triggered.connect( this, "editSettings()" );
@@ -76,7 +82,7 @@ public class PostOffice {
 	
 	public void deleteUser(){
 		User vUser = getSelectedUser();
-		if( vUser != null ){
+		if( vUser != null && vUser.getIncome() <= vUser.getOutgo() ){
 			String vSql = "UPDATE users SET deleted=1"
 					+ " WHERE rowid=" + vUser.getId();
 			Database.getInstance().execUpdate( vSql );
@@ -127,6 +133,46 @@ public class PostOffice {
 		searchUser(mLastUserSearch);
 	}
 	
+	public void printList(){
+		List<User> vUsers = getUsers( null );
+		
+		// create header
+		String vHeader = StringUtils.center( "NAME", 20 )
+		+ "|" + StringUtils.center( "HAUS", 6 )
+		+ "|" + StringUtils.center( "ETAGE", 6 )
+		+ "|" + StringUtils.center( "RAUM", 6 )
+		+ "|" + StringUtils.center( "BRIEFE", 6 );
+		String vHline = "\n" + StringUtils.repeat("-", 48);
+		String vText = vHeader + vHline;
+		
+		// create date string
+		SimpleDateFormat vDateFormat = new SimpleDateFormat( "MM.dd.yyyy" );
+		String vDateString = vDateFormat.format( new Date() );
+		
+		for( User vUser : vUsers ){
+			// add users with letters
+			if( vUser.getIncome() > vUser.getOutgo() ){
+
+				// add user data to text
+				int amount = (vUser.getIncome()-vUser.getOutgo());
+				vText += "\n" + StringUtils.padRight( vUser.getName(), 20 )
+						+ "|" + StringUtils.padLeft( vUser.getHouse(), 6 )
+						+ "|" + StringUtils.padLeft( vUser.getFloor(), 6 )
+						+ "|" + StringUtils.padLeft( vUser.getRoom(), 6 )
+						+ "|" + StringUtils.padLeft( Integer.toString(amount), 6 )
+						+ vHline;
+			}
+		}
+		
+		// initialize printer and print data
+		Printer vPrinter = new Printer( vText,
+				"Postliste - " + vDateString,
+				"Öffnungszeiten: Mo.-Fr. 09:00-13:00, 16:00-18:00" );
+		vPrinter.setFontSize(16);
+		vPrinter.print();
+		
+	}
+	
 	public void importUserData(){
 		
 	}
@@ -154,7 +200,7 @@ public class PostOffice {
 		
 		try {
 			
-			String vSql = "SELECT * FROM users WHERE deleted=0 ORDER BY name ASC;";
+			String vSql = "SELECT * FROM users WHERE deleted=0 ORDER BY house ASC, floor ASC, name ASC, room ASC;";
 			ResultSet vResult = Database.getInstance().execQuery( vSql );
 			
 			while( vResult.next() ){
@@ -163,6 +209,7 @@ public class PostOffice {
 				vUser.setHouse( vResult.getString("house") );
 				vUser.setFloor( vResult.getString("floor") );
 				vUser.setRoom( vResult.getString("room") );
+				vUser.setBirthdate( vResult.getString("birthdate") );
 				vUser.setIncome( vResult.getInt("income") );
 				vUser.setOutgo( vResult.getInt("outgo") );
 				vUser.setManualAdded( vResult.getBoolean("manualAdded") );
