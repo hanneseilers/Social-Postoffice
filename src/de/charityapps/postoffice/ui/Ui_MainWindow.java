@@ -17,6 +17,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
     public QAction actionImport;
     public QAction actionExport;
     public QAction actionSettings;
+    public QAction actionPrint;
     public QWidget centralwidget;
     public QWidget gridLayoutWidget;
     public QGridLayout gridLayout;
@@ -57,6 +58,8 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         actionSettings = new QAction(MainWindow);
         actionSettings.setObjectName("actionSettings");
         actionSettings.setEnabled(false);
+        actionPrint = new QAction(MainWindow);
+        actionPrint.setObjectName("actionPrint");
         centralwidget = new QWidget(MainWindow);
         centralwidget.setObjectName("centralwidget");
         centralwidget.setEnabled(true);
@@ -203,6 +206,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         MainWindow.setStatusBar(statusbar);
 
         menubar.addAction(menuDatei.menuAction());
+        menuDatei.addAction(actionPrint);
         menuDatei.addAction(actionImport);
         menuDatei.addAction(actionExport);
         menuDatei.addAction(actionSettings);
@@ -221,6 +225,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         actionImport.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kundendaten importieren", null));
         actionExport.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kundendaten exportieren", null));
         actionSettings.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Einstellungen", null));
+        actionPrint.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Liste drucken", null));
         lblUsrSearch.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Suche:", null));
         btnUsrEdit.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kunde bearbeiten", null));
         btnUsrDelete.setText(com.trolltech.qt.core.QCoreApplication.translate("MainWindow", "Kunde l\u00f6schen", null));

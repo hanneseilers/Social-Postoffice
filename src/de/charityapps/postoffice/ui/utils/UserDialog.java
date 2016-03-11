@@ -1,7 +1,9 @@
-package de.charityapps.postoffice;
+package de.charityapps.postoffice.ui.utils;
 
 import com.trolltech.qt.gui.QMainWindow;
 
+import de.charityapps.postoffice.Database;
+import de.charityapps.postoffice.PostOffice;
 import de.charityapps.postoffice.ui.Ui_UsrDialog;
 
 public class UserDialog {
@@ -29,17 +31,19 @@ public class UserDialog {
 		String vName = mDialog.txtName.text();
 		String vHouse = mDialog.txtHouse.text();
 		String vFloor = mDialog.txtFloor.text();
-		String vRoom = mDialog.txtRoom.text();		
+		String vRoom = mDialog.txtRoom.text();	
+		String vBirthdate = mDialog.txtBirthdate.text();
 		
 		if( vName.trim().length() > 0 ){
 			if( mAddUser ){
 				
 				// add new user
-				String vSql = "INSERT INTO users (name, house, floor, room, manualAdded) VALUES ("
+				String vSql = "INSERT INTO users (name, house, floor, room, birthdate, manualAdded) VALUES ("
 						+ "'" + vName + "',"
 						+ "'" + vHouse + "',"
 						+ "'" + vFloor + "',"
 						+ "'" + vRoom + "',"
+						+ "'" + vBirthdate + "',"
 						+ "1);";
 				Database.getInstance().execUpdate(vSql);
 				
@@ -51,7 +55,9 @@ public class UserDialog {
 						+ "house='" + vHouse + "',"
 						+ "floor='" + vFloor + "',"
 						+ "room='" + vRoom + "' "
-						+ "WHERE rowid=" + mID + ";";
+						+ "birthdate='" + vBirthdate + "',"
+						+ "manualAdded=1"
+						+ " WHERE rowid=" + mID + ";";
 				Database.getInstance().execUpdate(vSql);
 				
 			}

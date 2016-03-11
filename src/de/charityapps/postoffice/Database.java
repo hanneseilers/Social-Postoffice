@@ -49,6 +49,7 @@ public class Database {
 				+ "house VARCHAR(45) NULL,"
 				+ "floor VARCHAR(45) NULL,"
 				+ "room VARCHAR(45) NULL,"
+				+ "birthdate VARCHAR(45) NULL,"
 				+ "income INT(11) NOT NULL DEFAULT 0,"
 				+ "outgo INT(11) NOT NULL DEFAULT 0,"
 				+ "manualAdded TINYINT(1) NOT NULL DEFAULT 0,"

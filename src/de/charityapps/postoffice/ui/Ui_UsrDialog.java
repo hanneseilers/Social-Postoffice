@@ -23,6 +23,8 @@ public class Ui_UsrDialog implements com.trolltech.qt.QUiForm<QMainWindow>
     public QLineEdit txtHouse;
     public QLineEdit txtFloor;
     public QLineEdit txtRoom;
+    public QLabel lblBirthdate;
+    public QLineEdit txtBirthdate;
     public QWidget horizontalLayoutWidget;
     public QHBoxLayout horizontalLayout;
     public QPushButton btnCancel;
@@ -33,12 +35,12 @@ public class Ui_UsrDialog implements com.trolltech.qt.QUiForm<QMainWindow>
     public void setupUi(QMainWindow UsrDialog)
     {
         UsrDialog.setObjectName("UsrDialog");
-        UsrDialog.resize(new QSize(332, 193).expandedTo(UsrDialog.minimumSizeHint()));
+        UsrDialog.resize(new QSize(334, 247).expandedTo(UsrDialog.minimumSizeHint()));
         centralwidget = new QWidget(UsrDialog);
         centralwidget.setObjectName("centralwidget");
         gridLayoutWidget = new QWidget(centralwidget);
         gridLayoutWidget.setObjectName("gridLayoutWidget");
-        gridLayoutWidget.setGeometry(new QRect(0, 10, 331, 141));
+        gridLayoutWidget.setGeometry(new QRect(0, 10, 331, 181));
         gridLayout = new QGridLayout(gridLayoutWidget);
         gridLayout.setObjectName("gridLayout");
         lblHouse = new QLabel(gridLayoutWidget);
@@ -85,18 +87,39 @@ public class Ui_UsrDialog implements com.trolltech.qt.QUiForm<QMainWindow>
 
         gridLayout.addWidget(txtRoom, 3, 1, 1, 1);
 
+        lblBirthdate = new QLabel(gridLayoutWidget);
+        lblBirthdate.setObjectName("lblBirthdate");
+        lblBirthdate.setAlignment(AlignmentFlag.AlignRight);
+
+        gridLayout.addWidget(lblBirthdate, 4, 0, 1, 1);
+
+        txtBirthdate = new QLineEdit(gridLayoutWidget);
+        txtBirthdate.setObjectName("txtBirthdate");
+
+        gridLayout.addWidget(txtBirthdate, 4, 1, 1, 1);
+
         horizontalLayoutWidget = new QWidget(centralwidget);
         horizontalLayoutWidget.setObjectName("horizontalLayoutWidget");
-        horizontalLayoutWidget.setGeometry(new QRect(0, 150, 331, 41));
+        horizontalLayoutWidget.setGeometry(new QRect(0, 200, 331, 41));
         horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
         horizontalLayout.setObjectName("horizontalLayout");
         btnCancel = new QPushButton(horizontalLayoutWidget);
         btnCancel.setObjectName("btnCancel");
+        QSizePolicy sizePolicy = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy.setHorizontalStretch((byte)0);
+        sizePolicy.setVerticalStretch((byte)0);
+        sizePolicy.setHeightForWidth(btnCancel.sizePolicy().hasHeightForWidth());
+        btnCancel.setSizePolicy(sizePolicy);
 
         horizontalLayout.addWidget(btnCancel);
 
         btnSave = new QPushButton(horizontalLayoutWidget);
         btnSave.setObjectName("btnSave");
+        QSizePolicy sizePolicy1 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
+        sizePolicy1.setHorizontalStretch((byte)0);
+        sizePolicy1.setVerticalStretch((byte)0);
+        sizePolicy1.setHeightForWidth(btnSave.sizePolicy().hasHeightForWidth());
+        btnSave.setSizePolicy(sizePolicy1);
         btnSave.setAutoDefault(true);
         btnSave.setDefault(true);
 
@@ -117,6 +140,7 @@ public class Ui_UsrDialog implements com.trolltech.qt.QUiForm<QMainWindow>
         lblFloor.setText(com.trolltech.qt.core.QCoreApplication.translate("UsrDialog", "Etage:", null));
         lblRoom.setText(com.trolltech.qt.core.QCoreApplication.translate("UsrDialog", "Raum:", null));
         lblName.setText(com.trolltech.qt.core.QCoreApplication.translate("UsrDialog", "Name:", null));
+        lblBirthdate.setText(com.trolltech.qt.core.QCoreApplication.translate("UsrDialog", "Geburtsdatum:", null));
         btnCancel.setText(com.trolltech.qt.core.QCoreApplication.translate("UsrDialog", "Abbrechen", null));
         btnSave.setText(com.trolltech.qt.core.QCoreApplication.translate("UsrDialog", "Speichern", null));
     } // retranslateUi
