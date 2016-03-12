@@ -1,5 +1,6 @@
 package de.charityapps.postoffice;
 
+import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -12,11 +13,13 @@ import org.apache.log4j.Logger;
 
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QFileDialog;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QStringListModel;
 
 import de.charityapps.postoffice.ui.Ui_MainWindow;
 import de.charityapps.postoffice.ui.utils.UserDialog;
+import de.charityapps.postoffice.utils.ExcelImport;
 import de.charityapps.postoffice.utils.Printer;
 import de.charityapps.postoffice.utils.StringUtils;
 
@@ -72,14 +75,23 @@ public class PostOffice {
 		searchUser( null );
 	}
 	
+	/**
+	 * @return 	{@link QApplication} of user interface
+	 */
 	public QApplication getApplication(){
 		return mQApplication;
 	}
 	
+	/**
+	 * Function to edit user data (shows user dialog)
+	 */
 	public void editUser(){
 		
 	}
 	
+	/**
+	 * Function to delete selected user
+	 */
 	public void deleteUser(){
 		User vUser = getSelectedUser();
 		if( vUser != null && vUser.getIncome() <= vUser.getOutgo() ){
@@ -90,10 +102,19 @@ public class PostOffice {
 		searchUser(mLastUserSearch);
 	}
 	
+	/**
+	 * Function to add new user (shows user dialog)
+	 */
 	public void addUser(){
 		new UserDialog(true);
 	}
 	
+	/**
+	 * Function to search for a user.
+	 * If a user found containing the mentioned name,
+	 * it will be selected in user interface.
+	 * @param aName	{@link String} name of user to find.
+	 */
 	public void searchUser(String aName){
 		mUsers = getUsers( aName );
 		mLastUserSearch = aName;
@@ -109,10 +130,16 @@ public class PostOffice {
 		mUi.lstUsr.setModel( vModel );	
 	}
 	
+	/**
+	 * Updates search by researching with last search parameter.
+	 */
 	public void updateSearch(){
 		searchUser( mLastUserSearch );
 	}
 	
+	/**
+	 * Adds a letter to user.
+	 */
 	public void addIncome(){
 		User vUser = getSelectedUser();
 		if( vUser != null ){
@@ -123,6 +150,10 @@ public class PostOffice {
 		searchUser(mLastUserSearch);
 	}
 	
+	/**
+	 * Removes letter form user.
+	 * Only works if user has pending letters
+	 */
 	public void addOutgo(){
 		User vUser = getSelectedUser();
 		if( vUser != null && vUser.getIncome() > vUser.getOutgo() ){
@@ -133,6 +164,10 @@ public class PostOffice {
 		searchUser(mLastUserSearch);
 	}
 	
+	/**
+	 * Creates content of users with letters for printing.
+	 * Opens the systems print dialog.
+	 */
 	public void printList(){
 		List<User> vUsers = getUsers( null );
 		
@@ -173,18 +208,47 @@ public class PostOffice {
 		
 	}
 	
+	/**
+	 * Opens file dialog to choose excel file to import user data.
+	 * Imports and updates user data.
+	 */
 	public void importUserData(){
-		
+		String vFileName = QFileDialog.getOpenFileName( null, "Kundendatei auswählen", "Excel Dateien (*.xls, *.xlsx)" );
+		if( vFileName != null && (vFileName.contains(".xls") || vFileName.contains(".xlsx")) ){
+				
+			try {
+				
+				// import user data from file
+				logger.info( "Selected file for import: " + vFileName );
+				ExcelImport vImport = new ExcelImport( vFileName );
+				List<User> vImportUsers = vImport.getUsers();
+				List<User> vMergesUsers = ExcelImport.merge(getUsers(), vImportUsers);
+				
+				// TODO: update database
+				
+				
+			} catch (FileNotFoundException e) {
+				logger.error( "Cannot find file " + vFileName );
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 	public void exportUserData(){
-		
+		// TODO
 	}
 	
+	/**
+	 * Opens settings dialog.
+	 */
 	public void editSettings(){
-		
+		// TODO
 	}
 	
+	/**
+	 * @return	User selected in user interface.
+	 */
 	private User getSelectedUser(){
 		List<QModelIndex> vSelectedUsers = mUi.lstUsr.selectionModel().selectedRows();
 		
@@ -195,6 +259,19 @@ public class PostOffice {
 		return null;
 	}
 	
+	/**
+	 * @return	{@link List} of all {@link User}s
+	 */
+	private List<User> getUsers(){
+		return getUsers(null);
+	}
+	
+	/**
+	 * Gets all users containing a specific name.
+	 * @param aName	{@link String} of name for user selection.
+	 * @return		{@link List} of {@link User}s that names containing
+	 * 				passed as function argument.
+	 */
 	private List<User> getUsers(String aName){
 		List<User> vUsers = new ArrayList<User>();	
 		
@@ -227,6 +304,9 @@ public class PostOffice {
 		return vUsers;
 	}
 	
+	/**
+	 * @return Instance of {@link PostOffice}
+	 */
 	public static PostOffice getInstance(){
 		if( INSTANCE == null )
 			INSTANCE = new PostOffice();
@@ -234,6 +314,9 @@ public class PostOffice {
 		return INSTANCE;
 	}
 
+	/**
+	 * Main function.
+	 */
 	public static void main(String[] args) {
 		Logger vLogger = LogManager.getLogger( PostOffice.class );
 		vLogger.info( "checking for updates using jGithubLoader" );
