@@ -221,7 +221,8 @@ public class PostOffice implements StatusUpdater {
 	 */
 	public void importUserData(){
 		final String vFileName = QFileDialog.getOpenFileName( null, "Kundendatei auswählen", "Excel Dateien (*.xls, *.xlsx)" );
-		if( vFileName != null && (vFileName.contains(".xls") || vFileName.contains(".xlsx")) ){
+		if( vFileName != null
+				&& (vFileName.contains(".xls") || vFileName.contains(".xlsx") || vFileName.contains(".csv")) ){
 				
 				// import user data from file
 				logger.info( "Selected file for import: " + vFileName );

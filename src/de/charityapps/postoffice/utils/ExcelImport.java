@@ -1,7 +1,9 @@
 package de.charityapps.postoffice.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class ExcelImport{
 	private static Logger logger = LogManager.getLogger( ExcelImport.class );
 	
 	private File mExcelFile;
+	private FileTypes mFileType = null;
 	private HSSFWorkbook mWorkbook;
 
 	/**
@@ -33,10 +36,20 @@ public class ExcelImport{
 	 * @throws FileNotFoundException
 	 */
 	public ExcelImport(File aFile) throws FileNotFoundException {
-		if( aFile.isFile() && aFile.exists()
-				&& (aFile.getPath().endsWith(".xls") || aFile.getPath().endsWith(".xlsx")) )
-		mExcelFile = aFile;
-		readWorkbook();
+		if( aFile.isFile() && aFile.exists() ){
+			
+			if( aFile.getPath().endsWith(".xls") || aFile.getPath().endsWith(".xlsx") ){
+				mExcelFile = aFile;	
+				mFileType = FileTypes.EXCEL;
+				readWorkbook();
+			} else if( aFile.getPath().endsWith(".csv") ){
+				mExcelFile = aFile;
+				mFileType = FileTypes.CSV;
+			}
+			
+			logger.info( "File " + mExcelFile + " : " + mFileType );
+			
+		} 
 	}
 	
 	/**
@@ -55,12 +68,12 @@ public class ExcelImport{
 	public List<User> getUsers(){
 		List<User> vUsers = new ArrayList<User>();
 		
-		if( mWorkbook != null ){
+		if( mFileType == FileTypes.EXCEL && mWorkbook != null ){
 			
 			// go through every sheet as house
+			logger.info( "Importing user data from excel file" );
 			int vNumberOfSheets = mWorkbook.getNumberOfSheets();
-			for( int i=0; i < vNumberOfSheets; i++ ){
-				
+			for( int i=0; i < vNumberOfSheets; i++ ){				
 				HSSFSheet vSheet = mWorkbook.getSheetAt(i);
 				String vSheetName = vSheet.getSheetName();
 				logger.info( "Sheet name: " + vSheetName );
@@ -72,11 +85,92 @@ public class ExcelImport{
 				vUsers.addAll( getUsers(vSheet, vColumns) );
 			}
 			
+		} else if( mFileType == FileTypes.CSV && mExcelFile != null ){
+			logger.info( "Importing user data from csv file." );
+			vUsers.addAll( getUsers(mExcelFile) );
 		} else {
 			logger.error( "Cannot get userdata from workbook. No workbook loaded!" );
 		}
 		
 		return vUsers;
+	}
+	
+	/**
+	 * Imports user data from csv file.
+	 * @param aCsvFile 	{@link File} csv file to import.
+	 * @return			{@link List} of {@link User} from csv file.
+	 */
+	private List<User> getUsers(File aCsvFile){
+		List<User> vUsers = new ArrayList<User>();
+		
+		if( aCsvFile != null & aCsvFile.exists() && aCsvFile.isFile() ){			
+			try {
+				
+				BufferedReader vReader = new BufferedReader( new FileReader(aCsvFile) );
+				
+				// get header
+				String vLine;
+				if( (vLine = vReader.readLine()) != null ){
+					int[] vColumns = getUserdataColumnsFromSheet( vLine.toLowerCase().split("\t") );
+					
+					if( validateColumnsData(vColumns) ){
+						// read user data						
+						while( (vLine = vReader.readLine()) != null ){
+							
+							String[] vUserData = vLine.split("\t");
+							if( getMaxColumnNum(vColumns) < vUserData.length ){
+								
+								String vPreName = vUserData[vColumns[0]].trim();
+								String vLastName = vUserData[vColumns[1]].trim();
+								String vHouse = vUserData[vColumns[2]].replace("Haus", "").trim();
+								String vRoom = vUserData[vColumns[3]].trim();					
+								String vBirthdate = vUserData[vColumns[4]].trim();
+								
+								if( vLastName.length() > 0 ){
+									User vUser = new User(-1);
+									vUser.setName( vPreName + " " + vLastName );
+									vUser.setHouse( vHouse );
+									vUser.setRoom( vRoom );
+									vUser.setBirthdate( vBirthdate );
+									
+									vUsers.add( vUser );
+								}
+								
+							}
+							
+						}						
+					}
+				} else {
+					logger.warn( "Cannot read header from file " + aCsvFile.getPath() );
+				}
+				
+				vReader.close();
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				logger.error( "Cannot find file for import: " + aCsvFile.getPath() );
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error( e.getMessage() );
+			}
+		}
+		
+		return vUsers;
+	}
+	
+	/**
+	 * Gets maximum cloumn number.
+	 * @param aColumns	Array of {@link Integer} column.
+	 * @return			Maximum {@link Integer} number.
+	 */
+	private int getMaxColumnNum(int[] aColumns){
+		int max = -1;
+		for( int c : aColumns ){
+			if( c > max )
+				max = c;
+		}
+		
+		return max;
 	}
 	
 	/**
@@ -193,6 +287,37 @@ public class ExcelImport{
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Figures out columns of userdata inside a csv file.
+	 * For that the first row will be analysed.
+	 * @param aLine		Array of {@link String} with columns in csv line.
+	 * @return			Array of {@link Integer} with column numbers.
+	 * 					Format: [firstname, lastname, house, floor, room, birthdate]
+	 */
+	private int[] getUserdataColumnsFromSheet(String[] aLine){
+		int vColumnPreNameNum = -1;
+		int vColumnLastNameNum = -1;
+		int vColumnHouseNum = -1;
+		int vColumnRoomNum = -1;
+		int vColumnBirthdateNum = -1;
+		
+		for( int c=0; c < aLine.length; c++ ){
+			if( aLine[c].equals("vorname") ){
+				vColumnPreNameNum = c;
+			} else if( aLine[c].equals("nachname") ){
+				vColumnLastNameNum = c;
+			} else if( aLine[c].equals("haus") ){
+				vColumnHouseNum = c;
+			} else if( aLine[c].equals("zimmer") || aLine[c].equals("zi.") ){
+				vColumnRoomNum = c;
+			} else if( aLine[c].equals("geburtsdatum") || aLine[c].equals("geb.datum") ){
+				vColumnBirthdateNum = c;
+			}
+		}
+		
+		return new int[]{ vColumnPreNameNum, vColumnLastNameNum, vColumnHouseNum, vColumnRoomNum, vColumnBirthdateNum };
 	}
 	
 	/**
