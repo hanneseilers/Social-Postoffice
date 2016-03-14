@@ -2,24 +2,22 @@ package de.charityapps.postoffice.ui.utils;
 
 import com.trolltech.qt.gui.QMainWindow;
 
-import de.charityapps.postoffice.Database;
 import de.charityapps.postoffice.PostOffice;
+import de.charityapps.postoffice.User;
 import de.charityapps.postoffice.ui.Ui_UsrDialog;
 
 public class UserDialog {
 	
-	private boolean mAddUser = false;
-	private int mID = -1;
+	private User mUser = null;
 	private Ui_UsrDialog mDialog;
 	
-	public UserDialog(int aID) {
-		mID = aID;
+	public UserDialog(User aUser) {
+		mUser = aUser;
 		show();
 	}
 	
-	public UserDialog(boolean addUser){
-		this(-1);
-		mAddUser = addUser;
+	public UserDialog(){
+		this(null);
 	}
 	
 	public Ui_UsrDialog getUi(){
@@ -35,30 +33,27 @@ public class UserDialog {
 		String vBirthdate = mDialog.txtBirthdate.text();
 		
 		if( vName.trim().length() > 0 ){
-			if( mAddUser ){
+			if( mUser == null ){
 				
 				// add new user
-				String vSql = "INSERT INTO users (name, house, floor, room, birthdate, manualAdded) VALUES ("
-						+ "'" + vName + "',"
-						+ "'" + vHouse + "',"
-						+ "'" + vFloor + "',"
-						+ "'" + vRoom + "',"
-						+ "'" + vBirthdate + "',"
-						+ "1);";
-				Database.getInstance().execUpdate(vSql);
+				User vUser = new User();
+				vUser.setName(vName)
+					.setHouse(vHouse)
+					.setFloor(vFloor)
+					.setRoom(vRoom)
+					.setBirthdate(vBirthdate)
+					.setManualAdded(true)
+					.add();
 				
 			} else {
 				
 				// edit user
-				String vSql = "UPDATE users SET "
-						+ "name='" + vName + "',"
-						+ "house='" + vHouse + "',"
-						+ "floor='" + vFloor + "',"
-						+ "room='" + vRoom + "' "
-						+ "birthdate='" + vBirthdate + "',"
-						+ "manualAdded=1"
-						+ " WHERE rowid=" + mID + ";";
-				Database.getInstance().execUpdate(vSql);
+				mUser.setName(vName)
+					.setHouse(vHouse)
+					.setFloor(vFloor)
+					.setRoom(vRoom)
+					.setBirthdate(vBirthdate)
+					.update();
 				
 			}
 			
@@ -73,6 +68,14 @@ public class UserDialog {
 		mDialog = new Ui_UsrDialog();
 		mDialog.setupUi(vWindow);
 		vWindow.show();
+		
+		if( mUser != null ){
+			mDialog.txtName.setText( mUser.getName() );
+			mDialog.txtHouse.setText( mUser.getHouse() );
+			mDialog.txtFloor.setText( mUser.getFloor() );
+			mDialog.txtRoom.setText( mUser.getRoom() );
+			mDialog.txtBirthdate.setText( mUser.getBirthdate() );
+		}
 		
 		mDialog.btnSave.clicked.connect( this, "save()" );
 	}

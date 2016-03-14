@@ -1,10 +1,15 @@
 package de.charityapps.postoffice;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -101,7 +106,18 @@ public class Database {
 	}
 	
 	public void backup(){
-		// TODO
+		try {
+			SimpleDateFormat vDateFormat = new SimpleDateFormat( "yyyy-MM-dd-HH-mm-ss" );
+			String vDateString = vDateFormat.format( new Date() );
+		
+			// create directories and copy database file to new location
+			(new File("backup/")).mkdirs();
+			Files.copy( (new File("postoffice.db")).toPath(),
+					(new File("backup/" + vDateString + "_postoffice.db")).toPath()  );
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.error( "Cannot backup database file." );
+		}
 	}
 	
 	public static Database getInstance(){

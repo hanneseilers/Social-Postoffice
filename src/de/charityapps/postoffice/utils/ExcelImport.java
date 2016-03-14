@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.LogManager;
@@ -19,7 +20,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import de.charityapps.postoffice.User;
 
-public class ExcelImport {
+public class ExcelImport{
 	
 	private static Logger logger = LogManager.getLogger( ExcelImport.class );
 	
@@ -118,7 +119,8 @@ public class ExcelImport {
 	private User getUser(HSSFRow aRow, int[] aColumns, String aHouse){		
 		if( aRow != null && aColumns.length > 3 ){
 			// convert cell types to string
-			convertCellTypes( aRow, Arrays.copyOf(aColumns, 3) );
+			convertCellTypes( aRow, Arrays.copyOf(aColumns, 3), HSSFCell.CELL_TYPE_STRING );
+			//convertCellTypes( aRow, new int[]{aColumns[3]}, HSSFCell.CELL_TYPE_NUMERIC );
 			
 			// get cells
 			HSSFCell vCellName = aRow.getCell( aColumns[0] );
@@ -128,24 +130,34 @@ public class ExcelImport {
 			
 			// check cells and create user
 			if( vCellName != null && vCellFloor != null && vCellRoom != null && vCellBirthdate != null ){
-				String vName = vCellName.getStringCellValue().trim();
-				String vFloor = vCellFloor.getStringCellValue().trim();
-				String vRoom = vCellRoom.getStringCellValue().trim();
-				Date vBirthdate = vCellBirthdate.getDateCellValue();
-				
-				if( vName.length() > 0 ){
-					User vUser = new User(-1);
-					vUser.setName( vName );
-					vUser.setHouse( aHouse );
-					vUser.setFloor( vFloor );
-					vUser.setRoom( vRoom );
-					if( vBirthdate != null ){
-						SimpleDateFormat vDateFormat = new SimpleDateFormat( "MM.dd.yyyy" );
-						String vDateString = vDateFormat.format( vBirthdate );
-						vUser.setBirthdate( vDateString );
+				try{
+					
+					String vName = vCellName.getStringCellValue().trim();
+					String vFloor = vCellFloor.getStringCellValue().trim();
+					String vRoom = vCellRoom.getStringCellValue().trim();					
+					Date vBirthdate = (new SimpleDateFormat("dd.MM.yyyy")).parse("00.00.0000");
+					if( vCellBirthdate.getCellType() == HSSFCell.CELL_TYPE_NUMERIC ){
+						vBirthdate = vCellBirthdate.getDateCellValue();
 					}
 					
-					return vUser;
+					if( vName.length() > 0 ){
+						User vUser = new User(-1);
+						vUser.setName( vName );
+						vUser.setHouse( aHouse );
+						vUser.setFloor( vFloor );
+						vUser.setRoom( vRoom );
+						if( vBirthdate != null ){
+							SimpleDateFormat vDateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
+							String vDateString = vDateFormat.format( vBirthdate );
+							vUser.setBirthdate( vDateString );
+						}
+						
+						return vUser;
+					}
+				} catch( Exception e ){
+					e.printStackTrace();
+					logger.error( "Error importing data from row " + aRow.getRowNum()  );
+					System.exit(0);
 				}
 			}
 		}
@@ -158,12 +170,12 @@ public class ExcelImport {
 	 * @param aRow			{@link HSSFRow} to convert.
 	 * @param aColumnsData	Array of {@link Integer} cell numbers to convert.
 	 */
-	private void convertCellTypes(HSSFRow aRow, int[] aColumnsData){
+	private void convertCellTypes(HSSFRow aRow, int[] aColumnsData, int aCellType){
 		for( int i=0; i < aColumnsData.length; i++ ){
 			if( aColumnsData[i] < aRow.getLastCellNum() ){
 				HSSFCell vCell = aRow.getCell( aColumnsData[i] );
 				if( vCell != null )
-					vCell.setCellType( HSSFCell.CELL_TYPE_STRING );
+					vCell.setCellType( aCellType );
 			}
 		}
 	}
@@ -208,9 +220,9 @@ public class ExcelImport {
 						vColumnNameNum = c;
 					} else if( vCellContent.equals("etage") ){
 						vColumnFloorNum = c;
-					} else if( vCellContent.equals("zi.") ){
+					} else if( vCellContent.equals("zimmer") || vCellContent.equals("zi.") ){
 						vColumnRoomNum = c;
-					} else if( vCellContent.equals("geburtsdatum") ){
+					} else if( vCellContent.equals("geburtsdatum") || vCellContent.equals("geb.datum") ){
 						vColumnBirthdateNum = c;
 					}
 					
@@ -250,10 +262,49 @@ public class ExcelImport {
 	public static List<User> merge(List<User> aOriginal, List<User> aChanges){
 		List<User> vUsers = new ArrayList<User>();
 		
-		// TODO: Merge
+		// delete original users not in changes, not manually added and without letters
+		for( Iterator<User> vIterator = aOriginal.iterator(); vIterator.hasNext(); ){
+			User vUser = vIterator.next();
+			List<User> vUsersSelected = UserListUtils.selectUnique( aChanges, vUser.getName(), vUser.getBirthdate() );
+			
+			if( vUsersSelected.size() == 0 && !vUser.isManualAdded() ){
+				User vUserDeleted = new User(vUser);
+				vUsers.add( vUserDeleted.setName(null) );
+				vIterator.remove();
+			}
+		}
+		
+		// update and add user data
+		List<User> vUnassignedUsers = new ArrayList<User>();	// list of users with more unique
+																// users in original list
+		for( Iterator<User> vIterator = aChanges.iterator(); vIterator.hasNext(); ){
+			User vUser = vIterator.next();
+			List<User> vUsersSelected = UserListUtils.selectUnique( aOriginal, vUser.getName(), vUser.getBirthdate() );
+			
+			if( vUsersSelected.size() == 1 ){
+				// one unique user found > update user
+				User vUserSelected = new User(vUsersSelected.get(0)).update( vUser );
+				vUsers.add( vUserSelected );
+				vIterator.remove();
+				
+			} else if( vUsersSelected.size() == 0 ){
+				// no user found > add user
+				User vNewUser = new User(vUser);
+				vUsers.add( vNewUser );
+				vIterator.remove();
+				
+			} else if( vUnassignedUsers.size() > 1 ){
+				// more than one unique user found > add to list for further processing
+				vUnassignedUsers.add( vUser );
+				vIterator.remove();
+			}
+		}
+		
+		// process unassigned users
+		// TODO
+		logger.warn( "Unassigned users " + vUnassignedUsers.size() );
 		
 		return vUsers;
 	}
-	
 	
 }

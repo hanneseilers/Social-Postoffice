@@ -21,14 +21,16 @@ import de.charityapps.postoffice.ui.Ui_MainWindow;
 import de.charityapps.postoffice.ui.utils.UserDialog;
 import de.charityapps.postoffice.utils.ExcelImport;
 import de.charityapps.postoffice.utils.Printer;
+import de.charityapps.postoffice.utils.StatusUpdater;
 import de.charityapps.postoffice.utils.StringUtils;
+import de.charityapps.postoffice.utils.UserListUtils;
 
 /**
  * Main class
  * @author eilers
  *
  */
-public class PostOffice {
+public class PostOffice implements StatusUpdater {
 	
 	public static final String TAG_VERSION = "";
 	public static final String APP_NAME = "Social-Postoffice";
@@ -86,7 +88,9 @@ public class PostOffice {
 	 * Function to edit user data (shows user dialog)
 	 */
 	public void editUser(){
-		
+		User vUser = getSelectedUser();
+		if( vUser != null )
+			new UserDialog();
 	}
 	
 	/**
@@ -94,11 +98,8 @@ public class PostOffice {
 	 */
 	public void deleteUser(){
 		User vUser = getSelectedUser();
-		if( vUser != null && vUser.getIncome() <= vUser.getOutgo() ){
-			String vSql = "UPDATE users SET deleted=1"
-					+ " WHERE rowid=" + vUser.getId();
-			Database.getInstance().execUpdate( vSql );
-		}
+		if( vUser != null )
+			vUser.delete();
 		searchUser(mLastUserSearch);
 	}
 	
@@ -106,7 +107,7 @@ public class PostOffice {
 	 * Function to add new user (shows user dialog)
 	 */
 	public void addUser(){
-		new UserDialog(true);
+		new UserDialog();
 	}
 	
 	/**
@@ -125,9 +126,15 @@ public class PostOffice {
 			vUsersList.add( vUser.toString() );
 		}		
 		
-		QStringListModel vModel = new QStringListModel( vUsersList );		
-		vModel.setStringList(vUsersList);		
-		mUi.lstUsr.setModel( vModel );	
+		final QStringListModel vModel = new QStringListModel( vUsersList );		
+		vModel.setStringList(vUsersList);
+		
+		QApplication.invokeLater( new Runnable() {			
+			@Override
+			public void run() {
+				mUi.lstUsr.setModel( vModel );	
+			}
+		} );		
 	}
 	
 	/**
@@ -181,7 +188,7 @@ public class PostOffice {
 		String vText = vHeader + vHline;
 		
 		// create date string
-		SimpleDateFormat vDateFormat = new SimpleDateFormat( "MM.dd.yyyy" );
+		SimpleDateFormat vDateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
 		String vDateString = vDateFormat.format( new Date() );
 		
 		for( User vUser : vUsers ){
@@ -213,24 +220,52 @@ public class PostOffice {
 	 * Imports and updates user data.
 	 */
 	public void importUserData(){
-		String vFileName = QFileDialog.getOpenFileName( null, "Kundendatei auswählen", "Excel Dateien (*.xls, *.xlsx)" );
+		final String vFileName = QFileDialog.getOpenFileName( null, "Kundendatei auswählen", "Excel Dateien (*.xls, *.xlsx)" );
 		if( vFileName != null && (vFileName.contains(".xls") || vFileName.contains(".xlsx")) ){
-				
-			try {
 				
 				// import user data from file
 				logger.info( "Selected file for import: " + vFileName );
-				ExcelImport vImport = new ExcelImport( vFileName );
-				List<User> vImportUsers = vImport.getUsers();
-				List<User> vMergesUsers = ExcelImport.merge(getUsers(), vImportUsers);
-				
-				// TODO: update database
-				
-				
-			} catch (FileNotFoundException e) {
-				logger.error( "Cannot find file " + vFileName );
-				e.printStackTrace();
-			}
+				new Thread( new Runnable() {					
+					@Override
+					public void run() {
+						try{
+							
+							setUserListEnable( false );
+							showStatus( "Importing user data ..." );
+							logger.info( "Import user data from " + vFileName );
+							
+							ExcelImport vImport = new ExcelImport( vFileName );
+							List<User> vImportUsers = vImport.getUsers();
+							List<User> vMergesUsers = ExcelImport.merge(getUsers(), vImportUsers);
+							
+							// update database
+							showStatus( "Updating database ..." );
+							logger.info( "Updating database." );
+							for( User vUser : vMergesUsers ){
+								if( vUser.getName() == null ){
+									vUser.delete();
+									showStatus( "Kunde löschen: #ID-" + vUser.getId() );
+								} else if( vUser.getId() < 0 ){
+									vUser.add();
+									showStatus( "Kunde hinzufügen: " + vUser.getName() + " (" + vUser.getBirthdate() + ")" );
+								} else {
+									showStatus( "Kunde aktualisieren: " + vUser.getName() + " (" + vUser.getBirthdate() + ")" );
+									vUser.update();
+								}
+							}
+							
+							// update search
+							searchUser( null );
+						
+						} catch (FileNotFoundException e) {
+							logger.error( "Cannot find file " + vFileName );
+							e.printStackTrace();
+						}	
+						
+						setUserListEnable( true );
+						showStatus( "Database updated." );
+					}
+				} ).start();
 			
 		}
 	}
@@ -291,17 +326,32 @@ public class PostOffice {
 				vUser.setOutgo( vResult.getInt("outgo") );
 				vUser.setManualAdded( vResult.getBoolean("manualAdded") );
 				
-				if( (aName != null && vUser.getName().toLowerCase().contains(aName.toLowerCase()))
-						|| aName == null ){
-					vUsers.add( vUser );
-				}
+				vUsers.add( vUser );
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}	
 		
-		return vUsers;
+		return UserListUtils.selectByName( vUsers, aName );
+	}
+	
+	public void showStatus(final String aMessage){
+		QApplication.invokeLater( new Runnable() {			
+			@Override
+			public void run() {
+				mUi.statusbar.showMessage( aMessage );
+			}
+		} );
+	}
+	
+	public void setUserListEnable(final boolean aEnable){
+		QApplication.invokeLater( new Runnable() {			
+			@Override
+			public void run() {
+				mUi.lstUsr.setEnabled( aEnable );
+			}
+		} );
 	}
 	
 	/**
