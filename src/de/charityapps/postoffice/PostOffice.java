@@ -1,5 +1,6 @@
 package de.charityapps.postoffice;
 
+import java.awt.Font;
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -90,7 +91,7 @@ public class PostOffice implements StatusUpdater {
 	public void editUser(){
 		User vUser = getSelectedUser();
 		if( vUser != null )
-			new UserDialog();
+			new UserDialog( vUser ).show();
 	}
 	
 	/**
@@ -107,7 +108,7 @@ public class PostOffice implements StatusUpdater {
 	 * Function to add new user (shows user dialog)
 	 */
 	public void addUser(){
-		new UserDialog();
+		new UserDialog( mUi.txtSearch.text().trim() ).show();
 	}
 	
 	/**
@@ -117,6 +118,9 @@ public class PostOffice implements StatusUpdater {
 	 * @param aName	{@link String} name of user to find.
 	 */
 	public void searchUser(String aName){
+		if( aName != null )
+			aName = aName.trim();
+		
 		mUsers = getUsers( aName );
 		mLastUserSearch = aName;
 		
@@ -179,9 +183,9 @@ public class PostOffice implements StatusUpdater {
 		List<User> vUsers = getUsers( null );
 		
 		// create header
-		String vHeader = StringUtils.center( "NAME", 20 )
+		String vHeader = StringUtils.center( "NAME", 26 )
 		+ "|" + StringUtils.center( "HAUS", 6 )
-		+ "|" + StringUtils.center( "ETAGE", 6 )
+//		+ "|" + StringUtils.center( "ETAGE", 6 )
 		+ "|" + StringUtils.center( "RAUM", 6 )
 		+ "|" + StringUtils.center( "BRIEFE", 6 );
 		String vHline = "\n" + StringUtils.repeat("-", 48);
@@ -197,9 +201,9 @@ public class PostOffice implements StatusUpdater {
 
 				// add user data to text
 				int amount = (vUser.getIncome()-vUser.getOutgo());
-				vText += "\n" + StringUtils.padRight( vUser.getName(), 20 )
+				vText += "\n" + StringUtils.padRight( vUser.getName(), 26 )
 						+ "|" + StringUtils.padLeft( vUser.getHouse(), 6 )
-						+ "|" + StringUtils.padLeft( vUser.getFloor(), 6 )
+//						+ "|" + StringUtils.padLeft( vUser.getFloor(), 6 )
 						+ "|" + StringUtils.padLeft( vUser.getRoom(), 6 )
 						+ "|" + StringUtils.padLeft( Integer.toString(amount), 6 )
 						+ vHline;
@@ -210,7 +214,8 @@ public class PostOffice implements StatusUpdater {
 		Printer vPrinter = new Printer( vText,
 				"Postliste - " + vDateString,
 				"Öffnungszeiten: Mo.-Fr. 09:00-13:00, 16:00-18:00" );
-		vPrinter.setFontSize(16);
+		vPrinter.setFontSize( 16 );
+		vPrinter.setFontStyle( Font.BOLD );
 		vPrinter.print();
 		
 	}

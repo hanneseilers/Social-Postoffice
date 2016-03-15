@@ -194,12 +194,12 @@ public class User {
 	
 	public String toString(){
 		String vName = (name != null ? name : "#ID-" + Integer.toString(getId()));
-		return StringUtils.padRight(vName, 20)
-				+ "(" + StringUtils.cut(birthdate, 10) + ")"
+		return StringUtils.padRight(vName, 32)
+				+ "(" + StringUtils.padRight(birthdate, 10) + ")"
 				+ "\tHaus: " + StringUtils.padLeft(house, 6)
-				+ "\tEtage: " + StringUtils.padLeft(floor, 4)
+//				+ "\tEtage: " + StringUtils.padLeft(floor, 4)
 				+ "\tRaum: " + StringUtils.padLeft(room, 4)
-				+ "\n\t\t\t\t\tBriefe: " + StringUtils.padLeft(Integer.toString(income-outgo), 4);
+				+ "\n\t\t\t\t\t\tBriefe: " + StringUtils.padLeft(Integer.toString(income-outgo), 4);
 	}
 	
 }

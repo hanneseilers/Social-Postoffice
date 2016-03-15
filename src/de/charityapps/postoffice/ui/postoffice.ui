@@ -70,7 +70,7 @@
        <property name="font">
         <font>
          <family>Droid Sans Mono</family>
-         <pointsize>14</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="editTriggers">

@@ -8,6 +8,7 @@ import de.charityapps.postoffice.ui.Ui_UsrDialog;
 
 public class UserDialog {
 	
+	private String mUserName = null;
 	private User mUser = null;
 	private Ui_UsrDialog mDialog;
 	
@@ -16,9 +17,11 @@ public class UserDialog {
 		show();
 	}
 	
-	public UserDialog(){
-		this(null);
+	public UserDialog(String aUserName){
+		mUserName = aUserName;
 	}
+	
+	public UserDialog(){}
 	
 	public Ui_UsrDialog getUi(){
 		return mDialog;
@@ -57,7 +60,7 @@ public class UserDialog {
 				
 			}
 			
-			PostOffice.getInstance().updateSearch();
+			PostOffice.getInstance().searchUser(vName);
 		}
 		
 	}
@@ -75,6 +78,8 @@ public class UserDialog {
 			mDialog.txtFloor.setText( mUser.getFloor() );
 			mDialog.txtRoom.setText( mUser.getRoom() );
 			mDialog.txtBirthdate.setText( mUser.getBirthdate() );
+		} else if( mUserName != null ){
+			mDialog.txtName.setText( mUserName );
 		}
 		
 		mDialog.btnSave.clicked.connect( this, "save()" );

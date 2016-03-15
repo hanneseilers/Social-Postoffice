@@ -36,11 +36,12 @@ public class Printer {
 	
 	private static Logger logger = LogManager.getLogger( Printer.class );
 
-	private JTextArea component = null;
-	private MessageFormat header = null;
-	private MessageFormat footer = null;
-	private int fontSize = 9;
-	private String fontFamily = "Monospaced";
+	private String mContent = null;
+	private String mHeader = null;
+	private String mFooter = null;
+	private int mFontSize = 9;
+	private int mFontStyle = Font.PLAIN;
+	private String mFontFamily = "Monospaced";
 	
 	/**
 	 * Constructor using a header and a footer text
@@ -49,12 +50,12 @@ public class Printer {
 	 * @param footer
 	 */
 	public Printer(String content, String header, String footer) {
-		component = new JTextArea(content);
+		mContent = content;
 		
 		if( header != null )
-			this.header = new MessageFormat(header);
+			mHeader = header;
 		if( footer != null )
-			this.footer = new MessageFormat(footer);
+			mFooter = footer;
 	}
 	
 	/**
@@ -76,10 +77,10 @@ public class Printer {
 	
 	/**
 	 * Sets font size in pt, Default is 9pt.
-	 * @param fontSize	{@link Integer} font size in pt.
+	 * @param mFontSize	{@link Integer} font size in pt.
 	 */
 	public void setFontSize(int aFontSize){
-		fontSize = aFontSize;
+		mFontSize = aFontSize;
 	}
 	
 	/**
@@ -87,7 +88,15 @@ public class Printer {
 	 * @param aFontFamily	{@link String} of font family.
 	 */
 	public void setFontFamily(String aFontFamily){
-		fontFamily = aFontFamily;
+		mFontFamily = aFontFamily;
+	}
+	
+	/**
+	 * Sets font style.
+	 * @param aFontStyle	{@link Font} style.
+	 */
+	public void setFontStyle(int aFontStyle){
+		mFontStyle = aFontStyle;
 	}
 	
 	/**
@@ -96,20 +105,26 @@ public class Printer {
 	 */
 	public boolean print(){
 		try{
+
+			// set components
+			JTextArea component = new JTextArea(mContent);
+			MessageFormat vHeader = new MessageFormat("");
+			MessageFormat vFooter = new MessageFormat("");
 			
 			// set font
-			component.setFont( new Font(fontFamily, Font.PLAIN, fontSize) );
-			logger.debug( "Printing " + fontFamily + " " + fontSize + "pt. font" );
+			component.setFont( new Font(mFontFamily, mFontStyle, mFontSize) );
+			logger.info( "Printing " + mFontFamily + " " + mFontSize + "pt. font" );
 			
 			// print
-			if( header == null && footer == null )
+			if( mHeader == null && mFooter == null )
 				return component.print();
-			else if( header == null && footer != null )
-				header = new MessageFormat("");
-			else if( footer == null && header != null )
-				footer = new MessageFormat("");
 			
-			return component.print(header, footer);
+			if( mHeader != null)
+				vHeader = new MessageFormat(mHeader);
+			if( mFooter != null)
+				vFooter = new MessageFormat(mFooter);
+			
+			return component.print(vHeader, vFooter);
 			
 		} catch( PrinterException e ){
 			Logger.getLogger(getClass()).error("Could not print data.");
@@ -123,7 +138,7 @@ public class Printer {
 		try{
 			// create temp html file
 			PrintWriter vOut = new PrintWriter( "tmp.htm" );
-			vOut.print( component.getText() );
+			vOut.print( mContent );
 			vOut.close();
 			
 			// print html		
