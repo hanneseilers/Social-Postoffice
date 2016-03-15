@@ -195,10 +195,25 @@ public class PostOffice implements StatusUpdater {
 		SimpleDateFormat vDateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
 		String vDateString = vDateFormat.format( new Date() );
 		
+		int r = 1;
+		String vHouse = "";
 		for( User vUser : vUsers ){
 			// add users with letters
 			if( vUser.getIncome() > vUser.getOutgo() ){
-
+				
+				// check page padding and header				
+				if( r == 15 ){
+					vText += "\n\n" + vHeader + vHline;
+					r  = 1;
+				} else if( !vHouse.equals(vUser.getHouse()) ){
+					if( r == 14 ){
+						vText += "\n\n\n";
+						r = 0;
+					}
+					vText += "\n" + vHeader + vHline;
+					r++;
+				}
+				
 				// add user data to text
 				int amount = (vUser.getIncome()-vUser.getOutgo());
 				vText += "\n" + StringUtils.padRight( vUser.getName(), 26 )
@@ -207,6 +222,10 @@ public class PostOffice implements StatusUpdater {
 						+ "|" + StringUtils.padLeft( vUser.getRoom(), 6 )
 						+ "|" + StringUtils.padLeft( Integer.toString(amount), 6 )
 						+ vHline;
+				
+				// set page counter and house
+				r++;
+				vHouse = vUser.getHouse();
 			}
 		}
 		

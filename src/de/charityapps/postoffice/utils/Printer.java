@@ -113,7 +113,7 @@ public class Printer {
 			
 			// set font
 			component.setFont( new Font(mFontFamily, mFontStyle, mFontSize) );
-			logger.info( "Printing " + mFontFamily + " " + mFontSize + "pt. font" );
+			logger.debug( "Printing " + mFontFamily + " " + mFontSize + "pt. font" );
 			
 			// print
 			if( mHeader == null && mFooter == null )
