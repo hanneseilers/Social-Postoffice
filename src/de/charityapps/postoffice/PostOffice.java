@@ -20,6 +20,7 @@ import com.trolltech.qt.gui.QStringListModel;
 
 import de.charityapps.postoffice.ui.Ui_MainWindow;
 import de.charityapps.postoffice.ui.utils.UserDialog;
+import de.charityapps.postoffice.utils.BackupThread;
 import de.charityapps.postoffice.utils.ExcelImport;
 import de.charityapps.postoffice.utils.Printer;
 import de.charityapps.postoffice.utils.StatusUpdater;
@@ -403,10 +404,18 @@ public class PostOffice implements StatusUpdater {
 //		vLoader.setAppName( APP_NAME );
 //		vLoader.update( TAG_VERSION );
 		
+		// start database backup thread
+		BackupThread vBackupThread = new BackupThread();
+		vBackupThread.start();
+		
 		// start post office
 		logger.debug( "starting application" );
 		PostOffice.getInstance().getApplication().exec();
 		
+		// stop database backup thread
+		vBackupThread.setStop();		
+		
+		// create database backup
 		logger.debug( "creating database backup" );
 		Database.getInstance().backup();
 		Database.getInstance().closeDatabaseConnection();

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.log4j.LogManager;
@@ -109,6 +110,21 @@ public class Database {
 		try {
 			SimpleDateFormat vDateFormat = new SimpleDateFormat( "yyyy-MM-dd-HH-mm-ss" );
 			String vDateString = vDateFormat.format( new Date() );
+			
+			// clear backup directory
+			File vBackupDir = new File("backup");
+			if( vBackupDir.exists() && vBackupDir.isDirectory() ){
+				File[] vFiles = vBackupDir.listFiles();
+				
+				if( vFiles.length > 20 ){
+					Arrays.sort( vFiles );
+					for( int i=0; i < vFiles.length; i++ ){
+						if( vFiles[i].isFile() ){
+							vFiles[i].delete();
+						}
+					}
+				}
+			}
 		
 			// create directories and copy database file to new location
 			(new File("backup/")).mkdirs();
