@@ -1,5 +1,6 @@
 package de.charityapps.postoffice.ui.utils;
 
+import com.trolltech.qt.core.Qt.WindowType;
 import com.trolltech.qt.gui.QMainWindow;
 
 import de.charityapps.postoffice.PostOffice;
@@ -14,7 +15,6 @@ public class UserDialog {
 	
 	public UserDialog(User aUser) {
 		mUser = aUser;
-		show();
 	}
 	
 	public UserDialog(String aUserName){
@@ -70,6 +70,7 @@ public class UserDialog {
 		QMainWindow vWindow = new QMainWindow();
 		mDialog = new Ui_UsrDialog();
 		mDialog.setupUi(vWindow);
+		vWindow.setWindowFlags( WindowType.WindowStaysOnTopHint );
 		vWindow.show();
 		
 		if( mUser != null ){

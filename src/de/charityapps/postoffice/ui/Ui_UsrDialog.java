@@ -1,4 +1,7 @@
 package de.charityapps.postoffice.ui;
+package de.charityapps.postoffice.ui;
+package de.charityapps.postoffice.ui;
+package de.charityapps.postoffice.ui;
 /********************************************************************************
  ** Form generated from reading ui file 'userdialog.jui'
  **

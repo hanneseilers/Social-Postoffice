@@ -221,6 +221,7 @@
     <addaction name="actionPrint"/>
     <addaction name="actionImport"/>
     <addaction name="actionExport"/>
+    <addaction name="actionStatistic"/>
     <addaction name="actionSettings"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -257,6 +258,11 @@
   <action name="actionPrint">
    <property name="text">
     <string>Liste drucken</string>
+   </property>
+  </action>
+  <action name="actionStatistic">
+   <property name="text">
+    <string>Statistik anzeigen</string>
    </property>
   </action>
  </widget>

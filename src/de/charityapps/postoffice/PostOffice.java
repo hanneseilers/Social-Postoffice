@@ -19,7 +19,9 @@ import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QStringListModel;
 
 import de.charityapps.postoffice.ui.Ui_MainWindow;
+import de.charityapps.postoffice.ui.utils.StatisticsDialog;
 import de.charityapps.postoffice.ui.utils.UserDialog;
+import de.charityapps.postoffice.utils.BackupThread;
 import de.charityapps.postoffice.utils.ExcelImport;
 import de.charityapps.postoffice.utils.Printer;
 import de.charityapps.postoffice.utils.StatusUpdater;
@@ -68,6 +70,7 @@ public class PostOffice implements StatusUpdater {
 		mUi.actionExport.triggered.connect( this, "exportUserData()" );
 		mUi.actionImport.triggered.connect( this, "importUserData()" );
 		mUi.actionSettings.triggered.connect( this, "editSettings()" );
+		mUi.actionStatistic.triggered.connect( this, "showStatistics()" );
 		mUi.btnIncome.clicked.connect( this, "addIncome()" );
 		mUi.btnOutgo.clicked.connect( this, "addOutgo()" );
 		mUi.btnUsrAdd.clicked.connect( this, "addUser()" );
@@ -176,6 +179,13 @@ public class PostOffice implements StatusUpdater {
 	}
 	
 	/**
+	 * Shows statistics dialog
+	 */
+	public void showStatistics(){
+		(new StatisticsDialog()).show();
+	}
+	
+	/**
 	 * Creates content of users with letters for printing.
 	 * Opens the systems print dialog.
 	 */
@@ -195,10 +205,25 @@ public class PostOffice implements StatusUpdater {
 		SimpleDateFormat vDateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
 		String vDateString = vDateFormat.format( new Date() );
 		
+		int r = 1;
+		String vHouse = "";
 		for( User vUser : vUsers ){
 			// add users with letters
 			if( vUser.getIncome() > vUser.getOutgo() ){
-
+				
+				// check page padding and header				
+				if( r == 15 ){
+					vText += "\n\n" + vHeader + vHline;
+					r  = 1;
+				} else if( !vHouse.equals(vUser.getHouse()) ){
+					if( r == 14 ){
+						vText += "\n\n\n";
+						r = 0;
+					}
+					vText += "\n" + vHeader + vHline;
+					r++;
+				}
+				
 				// add user data to text
 				int amount = (vUser.getIncome()-vUser.getOutgo());
 				vText += "\n" + StringUtils.padRight( vUser.getName(), 26 )
@@ -207,6 +232,10 @@ public class PostOffice implements StatusUpdater {
 						+ "|" + StringUtils.padLeft( vUser.getRoom(), 6 )
 						+ "|" + StringUtils.padLeft( Integer.toString(amount), 6 )
 						+ vHline;
+				
+				// set page counter and house
+				r++;
+				vHouse = vUser.getHouse();
 			}
 		}
 		
@@ -384,10 +413,18 @@ public class PostOffice implements StatusUpdater {
 //		vLoader.setAppName( APP_NAME );
 //		vLoader.update( TAG_VERSION );
 		
+		// start database backup thread
+		BackupThread vBackupThread = new BackupThread();
+		vBackupThread.start();
+		
 		// start post office
 		logger.debug( "starting application" );
 		PostOffice.getInstance().getApplication().exec();
 		
+		// stop database backup thread
+		vBackupThread.setStop();		
+		
+		// create database backup
 		logger.debug( "creating database backup" );
 		Database.getInstance().backup();
 		Database.getInstance().closeDatabaseConnection();
