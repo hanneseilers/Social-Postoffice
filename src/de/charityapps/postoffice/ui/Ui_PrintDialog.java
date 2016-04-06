@@ -8,6 +8,7 @@ package de.charityapps.postoffice.ui;
  ********************************************************************************/
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import com.trolltech.qt.gui.QAbstractItemView.SelectionMode;
 
 public class Ui_PrintDialog implements com.trolltech.qt.QUiForm<QMainWindow>
 {
@@ -18,7 +19,8 @@ public class Ui_PrintDialog implements com.trolltech.qt.QUiForm<QMainWindow>
     public QRadioButton chkPrintAllHouses;
     public QRadioButton chkPrintEmptyHouses;
     public QRadioButton chkPrintSelectedHouses;
-    public QListWidget lstPrintHouses;
+    public QListView lstHouses;
+    public QCheckBox chkEveryHouseOnOnePage;
     public QHBoxLayout horizontalLayout;
     public QPushButton btnCancel;
     public QPushButton btnPrint;
@@ -58,16 +60,17 @@ public class Ui_PrintDialog implements com.trolltech.qt.QUiForm<QMainWindow>
 
         verticalLayout.addWidget(chkPrintSelectedHouses);
 
-        lstPrintHouses = new QListWidget(verticalLayoutWidget);
-        lstPrintHouses.setObjectName("lstPrintHouses");
-        QSizePolicy sizePolicy = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
-        sizePolicy.setHorizontalStretch((byte)0);
-        sizePolicy.setVerticalStretch((byte)0);
-        sizePolicy.setHeightForWidth(lstPrintHouses.sizePolicy().hasHeightForWidth());
-        lstPrintHouses.setSizePolicy(sizePolicy);
-        lstPrintHouses.setMinimumSize(new QSize(0, 20));
+        lstHouses = new QListView(verticalLayoutWidget);
+        lstHouses.setObjectName("lstHouses");
+        lstHouses.setEnabled(false);
+        lstHouses.setSelectionMode(SelectionMode.MultiSelection);
 
-        verticalLayout.addWidget(lstPrintHouses);
+        verticalLayout.addWidget(lstHouses);
+
+        chkEveryHouseOnOnePage = new QCheckBox(verticalLayoutWidget);
+        chkEveryHouseOnOnePage.setObjectName("chkEveryHouseOnOnePage");
+
+        verticalLayout.addWidget(chkEveryHouseOnOnePage);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout.setObjectName("horizontalLayout");
@@ -99,6 +102,7 @@ public class Ui_PrintDialog implements com.trolltech.qt.QUiForm<QMainWindow>
         chkPrintAllHouses.setText(com.trolltech.qt.core.QCoreApplication.translate("PrintDialog", "Alle H\u00e4user drucken", null));
         chkPrintEmptyHouses.setText(com.trolltech.qt.core.QCoreApplication.translate("PrintDialog", "Nur Eintr\u00e4ge ohne Haus drucken", null));
         chkPrintSelectedHouses.setText(com.trolltech.qt.core.QCoreApplication.translate("PrintDialog", "Ausgew\u00e4hlte H\u00e4user drucken:", null));
+        chkEveryHouseOnOnePage.setText(com.trolltech.qt.core.QCoreApplication.translate("PrintDialog", "Jedes Haus auf eine neue Seite drucken", null));
         btnCancel.setText(com.trolltech.qt.core.QCoreApplication.translate("PrintDialog", "Abbrechen", null));
         btnPrint.setText(com.trolltech.qt.core.QCoreApplication.translate("PrintDialog", "Drucken", null));
     } // retranslateUi

@@ -62,18 +62,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="lstPrintHouses">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QListView" name="lstHouses">
+       <property name="enabled">
+        <bool>false</bool>
        </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>20</height>
-        </size>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::MultiSelection</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="chkEveryHouseOnOnePage">
+       <property name="text">
+        <string>Jedes Haus auf eine neue Seite drucken</string>
        </property>
       </widget>
      </item>

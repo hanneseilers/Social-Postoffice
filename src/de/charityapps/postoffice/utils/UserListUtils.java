@@ -160,6 +160,40 @@ public class UserListUtils {
 		return vUsers;
 	}
 	
+	/**
+	 * Selects users from list by their house.
+	 * @param aUserList	{@link List} of {@link User}.
+	 * @param aHouse	{@link String} of houses.
+	 * @return			{@link List} of {@link User}.
+	 */
+	public static List<User> selectByHouse(List<User> aUserList, String aHouse){
+		List<User> vUsers = new ArrayList<User>();
+		
+		for( User vUser : aUserList ){
+			if( vUser.getHouse().equals(aHouse) )
+				vUsers.add(vUser);
+		}
+		
+		return vUsers;
+	}
+	
+	/**
+	 * Selects users from list by a list of houses.
+	 * @param aUserList	{@link List} of {@link User}.
+	 * @param aHouses	{@link List} of houses.
+	 * @return			{@link List} of {@link User}.
+	 */
+	public static List<User> selectByHouses(List<User> aUserList, List<String> aHouses){
+		List<User> vUsers = new ArrayList<User>();
+		
+		for( User vUser : aUserList ){
+			if( aHouses.contains(vUser.getHouse()) )
+				vUsers.add(vUser);
+		}
+		
+		return vUsers;
+	}
+	
 	
 	public enum SelectionType{
 		SELECT_CONTAINS,

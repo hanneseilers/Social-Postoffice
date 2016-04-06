@@ -1,17 +1,22 @@
 package de.charityapps.postoffice.ui.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
+import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt.WindowType;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QStringListModel;
 
 import de.charityapps.postoffice.User;
 import de.charityapps.postoffice.ui.Ui_PrintDialog;
 import de.charityapps.postoffice.utils.StringUtils;
+import de.charityapps.postoffice.utils.UserListUtils;
 import de.hanneseilers.easyprinter.EasyPrinter;
 
 public class PrintDialog {
@@ -27,9 +32,20 @@ public class PrintDialog {
 	 * Prints selected user data
 	 */
 	public void print(){
+		List<User> vUsers = mUsersList;
 		
 		// get only users of the selected houses
-		// TODO
+		if( mDialog.chkPrintEmptyHouses.isChecked() ){
+			vUsers = UserListUtils.selectByHouse(mUsersList, "");
+		} else if( mDialog.chkPrintSelectedHouses.isChecked() ){
+			List<QModelIndex> vSelectedHouses = mDialog.lstHouses.selectionModel().selectedRows();
+			List<String> vHouses = new ArrayList<String>();
+			for( QModelIndex vIndex : vSelectedHouses ){
+				vHouses.add( vIndex.data().toString() );
+			}
+			
+			vUsers = UserListUtils.selectByHouses(mUsersList, vHouses);
+		}
 		
 		// create date string
 		SimpleDateFormat vDateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
@@ -60,7 +76,7 @@ public class PrintDialog {
 		String vHouse = "";
 		
 		// add user data
-		for( User vUser : mUsersList ){
+		for( User vUser : vUsers ){
 			
 			// add only users with letters
 			if( vUser.getIncome() > vUser.getOutgo() ){
@@ -69,7 +85,8 @@ public class PrintDialog {
 				if( vLinesLeft == vMaxLines || !vHouse.equals(vUser.getHouse()) ){
 					
 					// check if table header is last entry on page
-					if( vLinesLeft <= 4 ){
+					if( vLinesLeft <= 4
+							|| (!vHouse.equals(vUser.getHouse()) && mDialog.chkEveryHouseOnOnePage.isChecked()) ){
 						// not enough space left, padd to page end
 						vText += StringUtils.repeat("\n", vLinesLeft);
 						vLinesLeft = vMaxLines;
@@ -109,6 +126,33 @@ public class PrintDialog {
 		vPrinter.print();
 	}
 	
+	public void enableHouseList(final boolean aChecked){
+		System.err.println("selected " + aChecked);
+		QApplication.invokeLater( new Runnable() {			
+			@Override
+			public void run() {
+				mDialog.lstHouses.setEnabled(aChecked);
+			}
+		} );
+	}
+	
+	/**
+	 * @return {@link List} of available houses.
+	 */
+	private List<String> getHouses(){
+    	List<String> vHouses = new ArrayList<String>();
+    	for( User vUser : mUsersList ){
+    		String vHouse = vUser.getHouse();
+    		if( vHouse.length() > 0 && !vHouses.contains(vHouse) )
+    			vHouses.add(vHouse);
+    	}
+    	
+    	return vHouses;
+    }
+	
+	/**
+	 * Shows dialog.
+	 */
 	public void show(){
 		QMainWindow vWindow = new QMainWindow();
 		mDialog = new Ui_PrintDialog();
@@ -117,6 +161,17 @@ public class PrintDialog {
 		vWindow.show();		
 		
 		mDialog.btnPrint.clicked.connect( this, "print()" );
+		mDialog.chkPrintSelectedHouses.toggled.connect( this, "enableHouseList(boolean)" );
+		
+		List<String> vHouses = getHouses();
+		final QStringListModel vModel = new QStringListModel( vHouses );
+		
+		QApplication.invokeLater( new Runnable() {			
+			@Override
+			public void run() {
+				mDialog.lstHouses.setModel(vModel);
+			}
+		} );
 	}
 	
 }
