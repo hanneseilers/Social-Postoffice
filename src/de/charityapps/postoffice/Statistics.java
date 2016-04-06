@@ -10,11 +10,11 @@ public class Statistics {
 	
 	private static Logger logger = LogManager.getLogger( PostOffice.class );
 
-	public static long getLettersTotal(){
+	public static long getLettersIncome(){
 		long vRet = 0;
 		try {
 			
-			String vSql = "SELECT SUM(income-outgo) AS amount FROM users";
+			String vSql = "SELECT SUM(income) AS amount FROM users";
 			ResultSet vResult = Database.getInstance().execQuery( vSql );		
 			return vResult.getLong("amount");
 			

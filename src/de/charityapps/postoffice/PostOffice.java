@@ -1,6 +1,5 @@
 package de.charityapps.postoffice;
 
-import java.awt.Font;
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +10,7 @@ import java.util.List;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.gui.QApplication;
@@ -23,10 +23,10 @@ import de.charityapps.postoffice.ui.utils.StatisticsDialog;
 import de.charityapps.postoffice.ui.utils.UserDialog;
 import de.charityapps.postoffice.utils.BackupThread;
 import de.charityapps.postoffice.utils.ExcelImport;
-import de.charityapps.postoffice.utils.Printer;
 import de.charityapps.postoffice.utils.StatusUpdater;
 import de.charityapps.postoffice.utils.StringUtils;
 import de.charityapps.postoffice.utils.UserListUtils;
+import de.hanneseilers.easyprinter.EasyPrinter;
 
 /**
  * Main class
@@ -192,59 +192,83 @@ public class PostOffice implements StatusUpdater {
 	public void printList(){
 		List<User> vUsers = getUsers( null );
 		
-		// create header
-		String vHeader = StringUtils.center( "NAME", 26 )
-		+ "|" + StringUtils.center( "HAUS", 6 )
-//		+ "|" + StringUtils.center( "ETAGE", 6 )
-		+ "|" + StringUtils.center( "RAUM", 6 )
-		+ "|" + StringUtils.center( "BRIEFE", 6 );
-		String vHline = "\n" + StringUtils.repeat("-", 48);
-		String vText = vHeader + vHline;
-		
 		// create date string
 		SimpleDateFormat vDateFormat = new SimpleDateFormat( "dd.MM.yyyy" );
 		String vDateString = vDateFormat.format( new Date() );
 		
-		int r = 1;
+		// set up printer
+		EasyPrinter vPrinter = new EasyPrinter( null,
+				"Postliste" + " - " + vDateString,
+				"Öffnungszeiten: Mo.-Fr. 09:00-13:00, 16:00-18:00\n"
+				+ "Bitte bringen Sie Ihren Ausweis mit.\n"
+				+ "Die Post wird max. 7 Tage aufbewahrt.\n"
+				+ "Schauen Sie jeden Tag nach neuer Post." );
+		vPrinter.setFontSize( 16 );
+		vPrinter.setFont( PDType1Font.COURIER_BOLD );
+		vPrinter.setBorders(10);
+		
+		// get maximum lines
+		final int vMaxLines = vPrinter.getMaxLines();
+		int vLinesLeft = vMaxLines;
+		
+		// create table header and other text components
+		String vHeader = StringUtils.center( "NAME", 34 )
+		+ "|" + StringUtils.center( "HAUS", 6 )
+//		+ "|" + StringUtils.center( "ETAGE", 6 )
+		+ "|" + StringUtils.center( "RAUM", 6 )
+		+ "|" + StringUtils.center( "BRIEFE", 6 );
+		String vHline = "\n" + StringUtils.repeat("-", 55);
+		String vText = "";		
 		String vHouse = "";
+		
+		// add user data
 		for( User vUser : vUsers ){
-			// add users with letters
+			
+			// add only users with letters
 			if( vUser.getIncome() > vUser.getOutgo() ){
 				
-				// check page padding and header				
-				if( r == 15 ){
-					vText += "\n\n" + vHeader + vHline;
-					r  = 1;
-				} else if( !vHouse.equals(vUser.getHouse()) ){
-					if( r == 14 ){
-						vText += "\n\n\n";
-						r = 0;
+				// check for page table header and house change
+				if( vLinesLeft == vMaxLines || !vHouse.equals(vUser.getHouse()) ){
+					
+					// check if table header is last entry on page
+					if( vLinesLeft <= 4 ){
+						// not enough space left, padd to page end
+						vText += StringUtils.repeat("\n", vLinesLeft);
+						vLinesLeft = vMaxLines;
 					}
-					vText += "\n" + vHeader + vHline;
-					r++;
-				}
+					
+					// add table header
+					if( vText.length() > 0 )
+						vText += "\n";
+					vText += vHeader + vHline;
+					vLinesLeft -= 2;
+				}				
 				
 				// add user data to text
 				int amount = (vUser.getIncome()-vUser.getOutgo());
-				vText += "\n" + StringUtils.padRight( vUser.getName(), 26 )
+				vText += "\n" + StringUtils.padRight( vUser.getName(), 34 )
 						+ "|" + StringUtils.padLeft( vUser.getHouse(), 6 )
 //						+ "|" + StringUtils.padLeft( vUser.getFloor(), 6 )
 						+ "|" + StringUtils.padLeft( vUser.getRoom(), 6 )
 						+ "|" + StringUtils.padLeft( Integer.toString(amount), 6 )
 						+ vHline;
+				vLinesLeft -= 2;
 				
-				// set page counter and house
-				r++;
+				// set house
 				vHouse = vUser.getHouse();
+				
+				// check for page padding
+				if( vLinesLeft < 2 ){
+					vText += StringUtils.repeat("\n", vLinesLeft);					
+					vLinesLeft = vMaxLines;
+				}
+				
 			}
+			
 		}
 		
 		// initialize printer and print data
-		Printer vPrinter = new Printer( vText,
-				"Postliste - " + vDateString,
-				"Öffnungszeiten: Mo.-Fr. 09:00-13:00, 16:00-18:00" );
-		vPrinter.setFontSize( 16 );
-		vPrinter.setFontStyle( Font.BOLD );
+		vPrinter.setContent(vText);
 		vPrinter.print();
 		
 	}

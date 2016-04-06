@@ -2,9 +2,10 @@ package de.charityapps.postoffice.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +107,8 @@ public class ExcelImport{
 		if( aCsvFile != null & aCsvFile.exists() && aCsvFile.isFile() ){			
 			try {
 				
-				BufferedReader vReader = new BufferedReader( new FileReader(aCsvFile) );
+				BufferedReader vReader = new BufferedReader(
+						new InputStreamReader( new FileInputStream(aCsvFile) , "UTF-16") );
 				
 				// get header
 				String vLine;
@@ -413,10 +415,22 @@ public class ExcelImport{
 				vIterator.remove();
 				
 			} else if( vUsersSelected.size() == 0 ){
-				// no user found > add user
-				User vNewUser = new User(vUser);
-				vUsers.add( vNewUser );
-				vIterator.remove();
+				// no user found > check if to find without birthdate
+				List<User> vUsersByName = UserListUtils.selectUnique( aOriginal, vUser.getName(), "" );
+				if( vUsersByName.size() == 1 ){
+					
+					// found user > update
+					User vUserSelected = new User(vUsersByName.get(0)).update( vUser );
+					vUsers.add( vUserSelected );
+					
+				} else {
+				
+					// not found by name > add user
+					User vNewUser = new User(vUser);
+					vUsers.add( vNewUser );
+					vIterator.remove();
+					
+				}
 				
 			} else if( vUnassignedUsers.size() > 1 ){
 				// more than one unique user found > add to list for further processing

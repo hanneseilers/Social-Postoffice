@@ -7,11 +7,11 @@ import com.trolltech.qt.gui.QMainWindow;
 
 import de.charityapps.postoffice.Statistics;
 import de.charityapps.postoffice.ui.Ui_StatisticsDialog;
-import de.charityapps.postoffice.utils.Printer;
+import de.hanneseilers.easyprinter.EasyPrinter;
 
 public class StatisticsDialog {
 
-	private long mLettersTotal;
+	private long mLettersIncome;
 	private long mLettersOutgo;
 	private long mUsersTotal;
 	private long mUsersManual;
@@ -27,7 +27,7 @@ public class StatisticsDialog {
 	}
 	
 	private void fetchStatistics(){
-		mLettersTotal = Statistics.getLettersTotal();
+		mLettersIncome = Statistics.getLettersIncome();
 		mLettersOutgo = Statistics.getLettersOutgo();
 		mUsersTotal = Statistics.getUsersTotal();
 		mUsersManual = Statistics.getUsersManual();
@@ -41,14 +41,14 @@ public class StatisticsDialog {
 		String vHeader = "Social-Postoffice Statistik";
 		String vFooter = "Social-Postoffice by charity-apps.net";
 		String vContent = "\nDatum: " + vDateString + "\n\n"
-					+ "Briefe vorhanden: " + Long.toString(mLettersTotal-mLettersOutgo) + "\n"
+					+ "Briefe vorhanden: " + Long.toString(mLettersIncome-mLettersOutgo) + "\n"
 					+ "Briefe ausgegeben: " + Long.toString(mLettersOutgo) + "\n"
 					+ "Kunden gesamt: " +  Long.toString(mUsersTotal) + "\n"
 					+ "Kunden manuell hinzugefügt: " + Long.toString(mUsersManual) + "\n"
 					+ "Kunden gelöscht: " +  Long.toString(mUsersDeleted);
 		
 		// print
-		Printer vPrinter = new Printer(vContent, vHeader, vFooter);
+		EasyPrinter vPrinter = new EasyPrinter(vContent, vHeader, vFooter);
 		vPrinter.setFontSize( 14 );
 		vPrinter.print();
 	}
@@ -63,7 +63,7 @@ public class StatisticsDialog {
 		mDialog.btnPrint.clicked.connect( this, "print()" );
 		
 		// set statistic data
-		mDialog.lblLettersTotal.setText( Long.toString(mLettersTotal-mLettersOutgo) );
+		mDialog.lblLettersTotal.setText( Long.toString(mLettersIncome-mLettersOutgo) );
 		mDialog.lblLettersOutgo.setText( Long.toString(mLettersOutgo) );
 		mDialog.lblUsersTotal.setText( Long.toString(mUsersTotal) );
 		mDialog.lblUsersManual.setText( Long.toString(mUsersManual) );

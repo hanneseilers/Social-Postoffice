@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="lib/qtjambi-native-linux32-gcc-4.8.7.jar"/>
 	<classpathentry kind="lib" path="lib/qtjambi-native-linux64-gcc-4.8.7.jar"/>
 	<classpathentry kind="lib" path="lib/qtjambi-native-win64-msvc2013x64-4.8.7.jar"/>
+	<classpathentry kind="lib" path="lib/jEasyPrinter.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-app-2.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

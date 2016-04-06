@@ -14,7 +14,7 @@ public class User {
 	private String house = "";
 	private String floor = "";
 	private String room = "";
-	private String birthdate = "00.00.0000";
+	private String birthdate = "";
 	private int income = 0;
 	private int outgo = 0;
 	private boolean manualAdded = false;
