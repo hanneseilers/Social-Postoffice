@@ -80,14 +80,14 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="cmdCancel">
+        <widget class="QPushButton" name="btnCancel">
          <property name="text">
           <string>Abbrechen</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cmdPrint">
+        <widget class="QPushButton" name="btnPrint">
          <property name="text">
           <string>Drucken</string>
          </property>
@@ -100,5 +100,38 @@
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>PrintDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>79</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPrint</sender>
+   <signal>clicked()</signal>
+   <receiver>PrintDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -33,12 +33,12 @@ public class Ui_StatisticsDialog implements com.trolltech.qt.QUiForm<QMainWindow
     public void setupUi(QMainWindow StatisticsDialog)
     {
         StatisticsDialog.setObjectName("StatisticsDialog");
-        StatisticsDialog.resize(new QSize(331, 172).expandedTo(StatisticsDialog.minimumSizeHint()));
+        StatisticsDialog.resize(new QSize(331, 190).expandedTo(StatisticsDialog.minimumSizeHint()));
         centralwidget = new QWidget(StatisticsDialog);
         centralwidget.setObjectName("centralwidget");
         gridLayoutWidget = new QWidget(centralwidget);
         gridLayoutWidget.setObjectName("gridLayoutWidget");
-        gridLayoutWidget.setGeometry(new QRect(0, 10, 331, 161));
+        gridLayoutWidget.setGeometry(new QRect(0, 10, 331, 177));
         gridLayout = new QGridLayout(gridLayoutWidget);
         gridLayout.setObjectName("gridLayout");
         label = new QLabel(gridLayoutWidget);
@@ -134,7 +134,7 @@ public class Ui_StatisticsDialog implements com.trolltech.qt.QUiForm<QMainWindow
         sizePolicy6.setHeightForWidth(btnPrint.sizePolicy().hasHeightForWidth());
         btnPrint.setSizePolicy(sizePolicy6);
 
-        gridLayout.addWidget(btnPrint, 5, 0, 1, 1);
+        gridLayout.addWidget(btnPrint, 5, 1, 1, 1);
 
         btnClose = new QPushButton(gridLayoutWidget);
         btnClose.setObjectName("btnClose");
@@ -144,11 +144,12 @@ public class Ui_StatisticsDialog implements com.trolltech.qt.QUiForm<QMainWindow
         sizePolicy7.setHeightForWidth(btnClose.sizePolicy().hasHeightForWidth());
         btnClose.setSizePolicy(sizePolicy7);
 
-        gridLayout.addWidget(btnClose, 5, 1, 1, 1);
+        gridLayout.addWidget(btnClose, 5, 0, 1, 1);
 
         StatisticsDialog.setCentralWidget(centralwidget);
         retranslateUi(StatisticsDialog);
         btnClose.clicked.connect(StatisticsDialog, "close()");
+        btnPrint.clicked.connect(StatisticsDialog, "close()");
 
         StatisticsDialog.connectSlotsByName();
     } // setupUi

@@ -39,15 +39,23 @@ if "src/" in package:
 			
 				# read file data
 				fi = open( vFile, 'r' )
+				print "editing java file:", vFile
 				data = "package " + str(package) + ";\n"	# add package
+				writeNewFile = True
 				for line in fi:
+					if str(package) in line:
+						writeNewFile = False
+						break;
 					data += line
 				fi.close()
 				
 				# write data back
-				fo = open( vFile, 'w' )
-				fo.write( data )
-				fo.close()
+				if writeNewFile:
+					fo = open( vFile, 'w' )
+					fo.write( data )
+					fo.close()
+				else:
+					print "\tskipped"
 
 
 

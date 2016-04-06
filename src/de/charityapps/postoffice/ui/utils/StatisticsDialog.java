@@ -3,6 +3,7 @@ package de.charityapps.postoffice.ui.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.trolltech.qt.core.Qt.WindowType;
 import com.trolltech.qt.gui.QMainWindow;
 
 import de.charityapps.postoffice.Statistics;
@@ -58,6 +59,7 @@ public class StatisticsDialog {
 		QMainWindow vWindow = new QMainWindow();
 		mDialog = new Ui_StatisticsDialog();
 		mDialog.setupUi(vWindow);
+		vWindow.setWindowFlags( WindowType.WindowStaysOnTopHint );
 		vWindow.show();		
 		
 		mDialog.btnPrint.clicked.connect( this, "print()" );
