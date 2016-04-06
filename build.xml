@@ -7,20 +7,25 @@
     <property name="dir.workspace" value="${dir.buildfile}/.."/>
     <property name="dir.jarfile" value="${dir.buildfile}"/>
     <target name="create_run_jar">
+    
         <jar destfile="${dir.jarfile}/SocialPostoffice.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="de.charityapps.postoffice.PostOffice"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
+            
             <fileset dir="${dir.jarfile}/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/jEasyPrinter.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/pdfbox-app-2.0.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/jGithubLoader.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/sqlite-jdbc-3.8.11.2.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/log4j-1.2.17.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/poi-3.14-20160307.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/qtjambi-4.8.7.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/qtjambi-native-linux32-gcc-4.8.7.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/qtjambi-native-linux64-gcc-4.8.7.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/qtjambi-native-win64-msvc2013x64-4.8.7.jar"/>
+            <!-- <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/qtjambi-native-linux64-gcc-4.8.7.jar"/> -->
+           	<!-- <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/qtjambi-native-win64-msvc2013x64-4.8.7.jar"/> -->
         </jar>
+        
     </target>
 </project>

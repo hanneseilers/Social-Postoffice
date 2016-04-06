@@ -59,6 +59,7 @@ public class PrintDialog {
 				+ "Die Post wird max. 7 Tage aufbewahrt.\n"
 				+ "Schauen Sie jeden Tag nach neuer Post." );
 		vPrinter.setFontSize( 16 );
+		vPrinter.setFooterFontSize(12);
 		vPrinter.setFont( PDType1Font.COURIER_BOLD );
 		vPrinter.setBorders(10);
 		
@@ -86,7 +87,7 @@ public class PrintDialog {
 					
 					// check if table header is last entry on page
 					if( vLinesLeft <= 4
-							|| (!vHouse.equals(vUser.getHouse()) && mDialog.chkEveryHouseOnOnePage.isChecked()) ){
+							|| (vLinesLeft != vMaxLines && mDialog.chkEveryHouseOnOnePage.isChecked()) ){
 						// not enough space left, padd to page end
 						vText += StringUtils.repeat("\n", vLinesLeft);
 						vLinesLeft = vMaxLines;
