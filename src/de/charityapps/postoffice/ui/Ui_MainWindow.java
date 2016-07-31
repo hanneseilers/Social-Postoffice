@@ -101,6 +101,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
         sizePolicy2.setVerticalStretch((byte)0);
         sizePolicy2.setHeightForWidth(lstUsr.sizePolicy().hasHeightForWidth());
         lstUsr.setSizePolicy(sizePolicy2);
+        QFontDatabase.addApplicationFont( "fonts/DroidSansMono.ttf" );
         QFont font1 = new QFont();
         font1.setFamily("Droid Sans Mono");
         font1.setPointSize(12);
@@ -134,6 +135,7 @@ public class Ui_MainWindow implements com.trolltech.qt.QUiForm<QMainWindow>
 
         btnUsrAdd = new QPushButton(gridLayoutWidget);
         btnUsrAdd.setObjectName("btnUsrAdd");
+        btnUsrAdd.setEnabled(false);		// added to temporary disable add button
         QSizePolicy sizePolicy5 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Expanding);
         sizePolicy5.setHorizontalStretch((byte)0);
         sizePolicy5.setVerticalStretch((byte)0);
