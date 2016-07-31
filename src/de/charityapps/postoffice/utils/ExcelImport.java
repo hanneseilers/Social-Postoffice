@@ -114,6 +114,9 @@ public class ExcelImport{
 				String vLine;
 				if( (vLine = vReader.readLine()) != null ){
 					int[] vColumns = getUserdataColumnsFromSheet( vLine.toLowerCase().split("\t") );
+					logger.debug( "Extracted file columns: " );
+					for( int i : vColumns )
+						logger.debug("\t" + i);
 					
 					if( validateColumnsData(vColumns) ){
 						// read user data						
@@ -130,7 +133,7 @@ public class ExcelImport{
 								
 								if( vLastName.length() > 0 ){
 									User vUser = new User(-1);
-									vUser.setName( vPreName + " " + vLastName );
+									vUser.setName( vLastName + ", " + vPreName );
 									vUser.setHouse( vHouse );
 									vUser.setRoom( vRoom );
 									vUser.setBirthdate( vBirthdate );
@@ -138,6 +141,8 @@ public class ExcelImport{
 									vUsers.add( vUser );
 								}
 								
+							} else {
+								logger.warn( "Line doesn't contain number of required information:\n\t" + vLine );
 							}
 							
 						}						
@@ -310,9 +315,9 @@ public class ExcelImport{
 				vColumnPreNameNum = c;
 			} else if( aLine[c].equals("nachname") ){
 				vColumnLastNameNum = c;
-			} else if( aLine[c].equals("haus") ){
+			} else if( aLine[c].equals("quartier") || aLine[c].equals("haus") ){
 				vColumnHouseNum = c;
-			} else if( aLine[c].equals("zimmer") || aLine[c].equals("zi.") ){
+			} else if( aLine[c].equals("wohneinheit") || aLine[c].equals("zimmer") || aLine[c].equals("zi.") ){
 				vColumnRoomNum = c;
 			} else if( aLine[c].equals("geburtsdatum") || aLine[c].equals("geb.datum") ){
 				vColumnBirthdateNum = c;
